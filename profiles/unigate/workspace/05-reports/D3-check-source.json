@@ -1,0 +1,681 @@
+{
+  "sourcePath": "C:\\Users\\zhang\\.codex\\plugins\\cache\\ai-project-engine-local\\ai-project-engine\\0.4.0\\payload\\skills\\validation\\SKILL.md",
+  "sourceSha256": "07fefc86fd5abd92f4af614075f0af10bf734686216b62d17af2767ec47b774e",
+  "knownRows": [
+    {
+      "id": "CH1-001",
+      "requirement": "业务背景含三要素：解决的业务问题、服务的用户角色、产生的业务价值"
+    },
+    {
+      "id": "CH1-002",
+      "requirement": "边界说明\"做什么\"已填写，内容非空"
+    },
+    {
+      "id": "CH1-003",
+      "requirement": "边界说明\"不做什么\"已填写，内容非空"
+    },
+    {
+      "id": "CH1-004",
+      "requirement": "设计决策表格已填充，每条决策含决策点/选择/理由"
+    },
+    {
+      "id": "CH1-005",
+      "requirement": "混合模式声明已填写"
+    },
+    {
+      "id": "CH1-006",
+      "requirement": "领域对象总览已标注角色（聚合根/实体/值对象）"
+    },
+    {
+      "id": "CH1-007",
+      "requirement": "子流程表已填充（含触发条件和所属聚合根）"
+    },
+    {
+      "id": "CH1-008",
+      "requirement": "关联领域对象表已填充"
+    },
+    {
+      "id": "CH1-009",
+      "requirement": "关联领域对象表中无\"服务集成关系\"对象"
+    },
+    {
+      "id": "CH1-010",
+      "requirement": "上游/下游集成关系表已填充"
+    },
+    {
+      "id": "CH1-011",
+      "requirement": "上下文映射说明列无技术实现词汇"
+    },
+    {
+      "id": "CH1-012",
+      "requirement": "数据同步方向归属正确"
+    },
+    {
+      "id": "CH2-001",
+      "requirement": "聚合根关系图存在，关系方向明确"
+    },
+    {
+      "id": "CH2-002",
+      "requirement": "跨聚合根不变量表格已填充"
+    },
+    {
+      "id": "CH2-003",
+      "requirement": "跨聚合根编排表格已填充"
+    },
+    {
+      "id": "CH2-004",
+      "requirement": "跨聚合根一致性通过领域事件+MQ保证"
+    },
+    {
+      "id": "CH3-001",
+      "requirement": "基础路径已确认（/{domain}）"
+    },
+    {
+      "id": "CH3-002",
+      "requirement": "HTTP方法：业务接口统一POST"
+    },
+    {
+      "id": "CH3-003",
+      "requirement": "响应格式：统一 Result\\<T\\> 包装"
+    },
+    {
+      "id": "CH3-004",
+      "requirement": "路径格式：/{domain}/{resource}/{action} 三级路径"
+    },
+    {
+      "id": "CH3-005",
+      "requirement": "operList规则已声明"
+    },
+    {
+      "id": "CH3-006",
+      "requirement": "权限守卫规则已声明"
+    },
+    {
+      "id": "CH3-007",
+      "requirement": "用户类型标注规则已声明"
+    },
+    {
+      "id": "CH3-008",
+      "requirement": "依赖方表格已填充"
+    },
+    {
+      "id": "CH3-009",
+      "requirement": "被依赖方表格已填充"
+    },
+    {
+      "id": "CH3-010",
+      "requirement": "角色定义表已填充"
+    },
+    {
+      "id": "CH3-011",
+      "requirement": "操作权限矩阵已填充"
+    },
+    {
+      "id": "CH3-012",
+      "requirement": "数据权限规则表已填充"
+    },
+    {
+      "id": "CH3-013",
+      "requirement": "枚举引用清单已填充"
+    },
+    {
+      "id": "CH3-014",
+      "requirement": "每个引用枚举标注了来源池"
+    },
+    {
+      "id": "CH3-015",
+      "requirement": "错误码定义已填充，含权限拒绝错误码"
+    },
+    {
+      "id": "CH3-016",
+      "requirement": "配置项已填充（按需）"
+    },
+    {
+      "id": "CH4-001",
+      "requirement": "混合模式声明表已填充"
+    },
+    {
+      "id": "CH4-002",
+      "requirement": "表结构组合已列出"
+    },
+    {
+      "id": "CH4-003",
+      "requirement": "领域对象已标注角色"
+    },
+    {
+      "id": "CH4-004",
+      "requirement": "对象关系已定义"
+    },
+    {
+      "id": "CH4-005a",
+      "requirement": "审计字段（created_by/name/time, updated_by/name/time）：主表必选"
+    },
+    {
+      "id": "CH4-005b",
+      "requirement": "乐观锁 data_version：主表必选"
+    },
+    {
+      "id": "CH4-005c",
+      "requirement": "软删除 delete_sign：主表必选"
+    },
+    {
+      "id": "CH4-005d",
+      "requirement": "业务编码 code：主表必选"
+    },
+    {
+      "id": "CH4-005e",
+      "requirement": "业务编号 number：选填"
+    },
+    {
+      "id": "CH4-005f",
+      "requirement": "来源标识 source/source_id：按需"
+    },
+    {
+      "id": "CH4-005g",
+      "requirement": "manage_mode：不需要"
+    },
+    {
+      "id": "CH4-006",
+      "requirement": "业务字段表已填充"
+    },
+    {
+      "id": "CH4-007",
+      "requirement": "主键命名：{module}_id，禁止裸id"
+    },
+    {
+      "id": "CH4-008",
+      "requirement": "主键类型VARCHAR(32)，禁止AUTO_INCREMENT"
+    },
+    {
+      "id": "CH4-009",
+      "requirement": "状态/分类/类型等字段定义为枚举"
+    },
+    {
+      "id": "CH4-010",
+      "requirement": "每个枚举字段已对照枚举池检查"
+    },
+    {
+      "id": "CH4-011",
+      "requirement": "已在池中的枚举标注来源"
+    },
+    {
+      "id": "CH4-012",
+      "requirement": "不在池中的枚举已与用户确认并写入池"
+    },
+    {
+      "id": "CH4-013",
+      "requirement": "枚举池中无重复定义"
+    },
+    {
+      "id": "CH4-014",
+      "requirement": "冗余字段逐对象完成8组标准字段检查"
+    },
+    {
+      "id": "CH4-015",
+      "requirement": "部门字段已从角色定义和数据权限中提取"
+    },
+    {
+      "id": "CH4-016a",
+      "requirement": "供应商冗余：supplier_id+supplier_code+supplier_name成组"
+    },
+    {
+      "id": "CH4-016b",
+      "requirement": "物料冗余：10字段成组"
+    },
+    {
+      "id": "CH4-016c",
+      "requirement": "币种冗余：currency_id+currency_code+currency_name+exchange_rate成组"
+    },
+    {
+      "id": "CH4-016d",
+      "requirement": "公司冗余：company_id+company_code+company_name成组"
+    },
+    {
+      "id": "CH4-016e",
+      "requirement": "组织/部门冗余：org_id+org_name成组"
+    },
+    {
+      "id": "CH4-016f",
+      "requirement": "上游单据冗余：{source}_id必须冗余"
+    },
+    {
+      "id": "CH4-017",
+      "requirement": "数据溯源表已填充"
+    },
+    {
+      "id": "CH4-018",
+      "requirement": "领域不变量已列出"
+    },
+    {
+      "id": "CH4-019",
+      "requirement": "领域服务表已填充"
+    },
+    {
+      "id": "CH4-020",
+      "requirement": "业务规则常量表已填充"
+    },
+    {
+      "id": "CH4-021",
+      "requirement": "标签池定义表已填充"
+    },
+    {
+      "id": "CH4-022",
+      "requirement": "无标签时标注\"本聚合根无标签池\""
+    },
+    {
+      "id": "CH4-023",
+      "requirement": "状态定义表已填充"
+    },
+    {
+      "id": "CH4-024",
+      "requirement": "状态流转表已填充"
+    },
+    {
+      "id": "CH4-025",
+      "requirement": "混合模式下审批类状态处理正确"
+    },
+    {
+      "id": "CH4-026",
+      "requirement": "驳回与撤回选项已确认"
+    },
+    {
+      "id": "CH4-027",
+      "requirement": "状态历史需求已确认"
+    },
+    {
+      "id": "CH4-028",
+      "requirement": "子流程清单已填充"
+    },
+    {
+      "id": "CH4-029",
+      "requirement": "子流程I/O契约表已填充"
+    },
+    {
+      "id": "CH4-030",
+      "requirement": "子流程内部状态模型已定义"
+    },
+    {
+      "id": "CH4-031",
+      "requirement": "子流程内部接口设计已展开"
+    },
+    {
+      "id": "CH4-032",
+      "requirement": "子流程内部领域模型已按需展开"
+    },
+    {
+      "id": "CH4-033",
+      "requirement": "接口清单按三层模型分组"
+    },
+    {
+      "id": "CH4-034",
+      "requirement": "管理接口表已填充"
+    },
+    {
+      "id": "CH4-035",
+      "requirement": "服务接口表已填充"
+    },
+    {
+      "id": "CH4-036",
+      "requirement": "自管模式有子流程时含workflow-callback服务接口"
+    },
+    {
+      "id": "CH4-037",
+      "requirement": "每个写操作接口已标注适用权限范围"
+    },
+    {
+      "id": "CH4-038",
+      "requirement": "动作接口清单已填充"
+    },
+    {
+      "id": "CH4-039",
+      "requirement": "每个管理接口均有对应动作接口"
+    },
+    {
+      "id": "CH4-040",
+      "requirement": "动作接口无独立HTTP端点"
+    },
+    {
+      "id": "CH4-041",
+      "requirement": "服务依赖清单已填充"
+    },
+    {
+      "id": "CH4-042",
+      "requirement": "服务依赖与接口方法规格引用一致"
+    },
+    {
+      "id": "CH4-043",
+      "requirement": "请求参数表已填充"
+    },
+    {
+      "id": "CH4-044",
+      "requirement": "分页接口AO含pageNum/pageSize"
+    },
+    {
+      "id": "CH4-045",
+      "requirement": "响应表已填充"
+    },
+    {
+      "id": "CH4-046",
+      "requirement": "字典字段同时返回key和value"
+    },
+    {
+      "id": "CH4-047",
+      "requirement": "业务流程类详情接口返回operList"
+    },
+    {
+      "id": "CH4-048",
+      "requirement": "主数据类含options接口"
+    },
+    {
+      "id": "CH4-049",
+      "requirement": "枚举字段注释列出所有枚举值"
+    },
+    {
+      "id": "CH4-050",
+      "requirement": "枚举字段不内联定义枚举值表"
+    },
+    {
+      "id": "CH4-051",
+      "requirement": "业务规则已列出"
+    },
+    {
+      "id": "CH4-052",
+      "requirement": "跨接口复用规则已提取"
+    },
+    {
+      "id": "CH4-053",
+      "requirement": "校验规则表已填充"
+    },
+    {
+      "id": "CH4-054",
+      "requirement": "写操作接口包含权限校验规则"
+    },
+    {
+      "id": "CH4-055",
+      "requirement": "错误码格式符合{BIZ}_{OBJECT}_{ERROR}"
+    },
+    {
+      "id": "CH4-056",
+      "requirement": "服务方法规格表已填充"
+    },
+    {
+      "id": "CH4-057",
+      "requirement": "触发来源仅用于审计日志"
+    },
+    {
+      "id": "CH4-058a",
+      "requirement": "业务单据写操作事务边界：onsProducerService.send+TransactionTemplate"
+    },
+    {
+      "id": "CH4-058b",
+      "requirement": "主数据写操作事务边界：仅TransactionTemplate"
+    },
+    {
+      "id": "CH4-058c",
+      "requirement": "撤回操作事务边界：仅TransactionTemplate"
+    },
+    {
+      "id": "CH4-059a",
+      "requirement": "业务单据写操作MQ：默认发送"
+    },
+    {
+      "id": "CH4-059b",
+      "requirement": "撤回/主数据写操作MQ：默认不发送"
+    },
+    {
+      "id": "CH4-060",
+      "requirement": "标签重建标注正确"
+    },
+    {
+      "id": "CH4-061",
+      "requirement": "处理步骤采用增量diff更新"
+    },
+    {
+      "id": "CH4-062",
+      "requirement": "标签diff无变更时零DB写入"
+    },
+    {
+      "id": "CH4-063",
+      "requirement": "操作日志需求已确认"
+    },
+    {
+      "id": "CH4-064",
+      "requirement": "跨接口复用规则表已填充"
+    },
+    {
+      "id": "CH4-065",
+      "requirement": "枚举定义表只列出引用，不重新定义"
+    },
+    {
+      "id": "CH4-066",
+      "requirement": "领域事件表已填充"
+    },
+    {
+      "id": "CH4-067",
+      "requirement": "MQ消息结构已补充"
+    },
+    {
+      "id": "CH4-068",
+      "requirement": "businessType格式正确：{module}_{resource}_{action}"
+    },
+    {
+      "id": "CH4-069",
+      "requirement": "业务单据：所有写操作已确认MQ事件"
+    },
+    {
+      "id": "CH4-070",
+      "requirement": "主数据：默认不发MQ，已确认"
+    },
+    {
+      "id": "CH4-071",
+      "requirement": "仓储契约表已填充"
+    },
+    {
+      "id": "CH4-072",
+      "requirement": "关联域调用表已填充"
+    },
+    {
+      "id": "CH4-073",
+      "requirement": "关联领域对象与关联域调用一一对应"
+    },
+    {
+      "id": "CH5-001",
+      "requirement": "对外服务清单已填充"
+    },
+    {
+      "id": "CH5-002",
+      "requirement": "主数据对外服务含options+detail+list"
+    },
+    {
+      "id": "CH5-003",
+      "requirement": "业务单据对外服务含detail+审批回调"
+    },
+    {
+      "id": "CH5-004",
+      "requirement": "SQL清单已填充"
+    },
+    {
+      "id": "CH5-005",
+      "requirement": "DDL已基于领域模型生成"
+    },
+    {
+      "id": "CH5-006",
+      "requirement": "字段COMMENT与对象字段表一致"
+    },
+    {
+      "id": "CH5-007",
+      "requirement": "标准字段按conventions补充"
+    },
+    {
+      "id": "CH5-008a",
+      "requirement": "主键禁止裸id"
+    },
+    {
+      "id": "CH5-008b",
+      "requirement": "主表主键命名：{module}_id"
+    },
+    {
+      "id": "CH5-008c",
+      "requirement": "子表外键字段名与父表主键一致"
+    },
+    {
+      "id": "CH5-009",
+      "requirement": "主键类型VARCHAR(32)，禁止AUTO_INCREMENT"
+    },
+    {
+      "id": "CH5-010",
+      "requirement": "字符集utf8mb4+引擎InnoDB"
+    },
+    {
+      "id": "CH5-011",
+      "requirement": "索引命名合规，单表<=5个"
+    },
+    {
+      "id": "CH5-012",
+      "requirement": "VARCHAR>255字段未建索引"
+    },
+    {
+      "id": "CH5-013a",
+      "requirement": "金额字段DDL类型DECIMAL(20,6)"
+    },
+    {
+      "id": "CH5-013b",
+      "requirement": "数量字段DDL类型DECIMAL(20,6)"
+    },
+    {
+      "id": "CH5-013c",
+      "requirement": "整数状态码字段DDL类型VARCHAR(32)"
+    },
+    {
+      "id": "CH5-013d",
+      "requirement": "布尔/标志位字段DDL类型INT(1)"
+    },
+    {
+      "id": "CH5-014",
+      "requirement": "扩展表_ext DDL符合规范"
+    },
+    {
+      "id": "CH5-015",
+      "requirement": "标签表_tag DDL符合规范"
+    },
+    {
+      "id": "CH5-016",
+      "requirement": "附件表_attach DDL符合规范"
+    },
+    {
+      "id": "CH5-017",
+      "requirement": "操作日志表_log DDL符合规范"
+    },
+    {
+      "id": "CH5-018",
+      "requirement": "审批记录表_approval DDL符合规范"
+    },
+    {
+      "id": "GL-001a",
+      "requirement": "文档头日期>=更新记录最新条目日期"
+    },
+    {
+      "id": "GL-001b",
+      "requirement": "必填章节存在且内容非空"
+    },
+    {
+      "id": "GL-002",
+      "requirement": "选填/不填章节已注明跳过原因"
+    },
+    {
+      "id": "GL-003",
+      "requirement": "混合模式声明与确认结果一致"
+    },
+    {
+      "id": "GL-004",
+      "requirement": "领域对象总览与Ch4一一对应"
+    },
+    {
+      "id": "GL-005",
+      "requirement": "子流程与Ch4一一对应"
+    },
+    {
+      "id": "GL-006",
+      "requirement": "关联领域对象与Ch4关联域调用一一对应"
+    },
+    {
+      "id": "GL-007",
+      "requirement": "Ch3角色与Ch4状态流转允许角色一致"
+    },
+    {
+      "id": "GL-008",
+      "requirement": "Ch3依赖方与Ch4领域事件消费方一致"
+    },
+    {
+      "id": "GL-009",
+      "requirement": "接口路径全部为三级路径格式"
+    },
+    {
+      "id": "GL-010",
+      "requirement": "HTTP方法统一POST"
+    },
+    {
+      "id": "GL-011",
+      "requirement": "响应格式统一Result\\<T\\>"
+    },
+    {
+      "id": "GL-012",
+      "requirement": "写操作接口全部包含权限校验规则"
+    },
+    {
+      "id": "GL-021",
+      "requirement": "API文档引用的所有枚举在枚举池有定义"
+    },
+    {
+      "id": "GL-022",
+      "requirement": "枚举池无重复定义"
+    },
+    {
+      "id": "GL-026",
+      "requirement": "所有枚举字段均来源于枚举池"
+    },
+    {
+      "id": "GL-027",
+      "requirement": "每个枚举引用标注了来源池文件名+章节号"
+    },
+    {
+      "id": "GL-028",
+      "requirement": "系统/业务枚举引用指向正确池文件"
+    },
+    {
+      "id": "GL-029",
+      "requirement": "detail接口AO含withXxx布尔开关"
+    },
+    {
+      "id": "GL-030",
+      "requirement": "主表查询不受开关影响，子表查询包裹在if块中"
+    },
+    {
+      "id": "GL-031",
+      "requirement": "主数据类含options接口"
+    },
+    {
+      "id": "GL-032",
+      "requirement": "枚举字典统一走dict/batch，禁止独立端点"
+    }
+  ],
+  "missingOriginalAssets": [
+    "prd-to-api-design/template.md",
+    "prd-to-api-design/check.sh",
+    "prd-to-api-design/checklist.md"
+  ],
+  "undefinedInAvailableSource": [
+    "CH6 definitions (3 claimed by design skill)",
+    "GL-013",
+    "GL-014",
+    "GL-015",
+    "GL-016",
+    "GL-017",
+    "GL-018",
+    "GL-019",
+    "GL-020",
+    "GL-023",
+    "GL-024",
+    "GL-025"
+  ]
+}

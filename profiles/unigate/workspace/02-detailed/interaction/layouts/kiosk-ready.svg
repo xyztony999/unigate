@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-label="UniGate 自助检票横屏"><title>UniGate 自助检票</title>
+<rect x="0" y="0" width="1600" height="1000" rx="0" fill="#FFFFFF"/>
+<text x="56" y="58.4" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#176353">UniGate · 自助检票</text>
+<text x="56" y="113.9" font-family="Microsoft YaHei, sans-serif" font-size="34" font-weight="700" fill="#182B2A">新生与家长见面会</text>
+<rect x="1276" y="62" width="268" height="48" rx="24" fill="#EAF3EE"/>
+<text x="1338.5" y="93.85" font-family="Microsoft YaHei, sans-serif" font-size="21" font-weight="400" fill="#176353">在线 · 检票开放</text>
+<line x1="56" y1="160" x2="1544" y2="160" stroke="#D9E1DD" stroke-width="1"/>
+<rect x="56" y="218" width="644" height="622" rx="20" fill="#253C39"/>
+<line x1="166" y1="320" x2="208" y2="320" stroke="#B5D9CA" stroke-width="4"/>
+<line x1="166" y1="320" x2="166" y2="362" stroke="#B5D9CA" stroke-width="4"/>
+<line x1="590" y1="320" x2="548" y2="320" stroke="#B5D9CA" stroke-width="4"/>
+<line x1="590" y1="320" x2="590" y2="362" stroke="#B5D9CA" stroke-width="4"/>
+<line x1="166" y1="744" x2="208" y2="744" stroke="#B5D9CA" stroke-width="4"/>
+<line x1="166" y1="744" x2="166" y2="702" stroke="#B5D9CA" stroke-width="4"/>
+<line x1="590" y1="744" x2="548" y2="744" stroke="#B5D9CA" stroke-width="4"/>
+<line x1="590" y1="744" x2="590" y2="702" stroke="#B5D9CA" stroke-width="4"/>
+<text x="318.0" y="521.5" font-family="Microsoft YaHei, sans-serif" font-size="30" font-weight="700" fill="#FFFFFF">等待扫码</text>
+<text x="784" y="341.7" font-family="Microsoft YaHei, sans-serif" font-size="42" font-weight="700" fill="#182B2A">请出示您的入场码</text>
+<text x="784" y="404.95" font-family="Microsoft YaHei, sans-serif" font-size="27" font-weight="400" fill="#647371">将二维码对准左侧扫描区</text>
+<text x="784" y="558.8" font-family="Microsoft YaHei, sans-serif" font-size="28" font-weight="700" fill="#182B2A">同组人员可以分批入场</text>
+<text x="784" y="608.4" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="400" fill="#647371">每次只登记实际到场的人数</text>
+<text x="646.0" y="954.7" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="400" fill="#647371">需要帮助，请联系现场工作人员</text>
+</svg>

@@ -1,0 +1,133 @@
+{
+  "scope": "Gate1-independent-cross-stage-document-assertions",
+  "timestamp": "2026-10-20T17:15:17.309990+00:00",
+  "basis": [
+    "ADR-043",
+    "ADR-044"
+  ],
+  "passed": 19,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "active-chain",
+      "status": "PASS",
+      "evidence": "Business unigate and Spring Boot/Vue stack explicitly bound; engine-cli integrity evaluated separately"
+    },
+    {
+      "name": "confirmation-chain",
+      "status": "PASS",
+      "evidence": "Online scope, architecture, requirements, API, project basis, seven-item interaction confirmation recorded"
+    },
+    {
+      "name": "ba-aa-map",
+      "status": "PASS",
+      "evidence": "All 17 BA activities map once into AA; 8 BA capabilities retained"
+    },
+    {
+      "name": "aa-fl-api-pages-map",
+      "status": "PASS",
+      "evidence": "23 AA leaves / 43 FL functions map to API and 33 pages without new modules"
+    },
+    {
+      "name": "prd-acceptance",
+      "status": "PASS",
+      "evidence": "16 PRD acceptance scenarios and all five roles present; qualitative completeness manually reviewed"
+    },
+    {
+      "name": "domain-api-roots",
+      "status": "PASS",
+      "evidence": "Seven confirmed aggregate names and five model categories trace to API service design"
+    },
+    {
+      "name": "api-completeness",
+      "status": "PASS",
+      "evidence": "All 85 operations have request/response/data schemas, shared errors, and stack-conforming paths"
+    },
+    {
+      "name": "page-types",
+      "status": "PASS",
+      "evidence": "List/form/detail/review plus import/scanner/kiosk types covered"
+    },
+    {
+      "name": "page-action-exactness",
+      "status": "PASS",
+      "evidence": "Every page action matches API; OAuth callback remains protocol-only"
+    },
+    {
+      "name": "event-state-cross-stage",
+      "status": "PASS",
+      "evidence": "All event states present; access archival occurs before physical cleanup, whose progress remains separate"
+    },
+    {
+      "name": "critical-guards",
+      "status": "PASS",
+      "evidence": "Preparation/review/import vs onsite increase/correction windows explicit"
+    },
+    {
+      "name": "scanner-transition-evidence",
+      "status": "PASS",
+      "evidence": "Each of nine scanner states has trigger, restrictions, and next-step design"
+    },
+    {
+      "name": "in-progress-preserves-operation",
+      "status": "PASS",
+      "evidence": "409 in-progress is distinguished from definite business rejection; it cannot create a new operation"
+    },
+    {
+      "name": "owner-only-special-actions",
+      "status": "PASS",
+      "evidence": "Special writes/export remain organizer-only; reader remains read-only"
+    },
+    {
+      "name": "enum-single-source",
+      "status": "PASS",
+      "evidence": "Each of 29 enums has one authoritative pool section; code/label contents checked by D3 validator"
+    },
+    {
+      "name": "artifact-changelogs",
+      "status": "PASS",
+      "evidence": "All 14 primary Markdown design artifacts have dated changelogs"
+    },
+    {
+      "name": "phase-check-evidence",
+      "status": "PASS",
+      "evidence": "Current D3/D4 check evidence and API/page fingerprints match; these are document-only assertions"
+    },
+    {
+      "name": "design-index-readiness",
+      "status": "PASS",
+      "evidence": "D0-D4 complete; implementation and Gate2 remain todo; final Gate1 status updated after manual decision"
+    },
+    {
+      "name": "design-only-workspace",
+      "status": "PASS",
+      "evidence": "No backend/frontend application scaffold; no runtime, provider, or device claim"
+    }
+  ],
+  "artifacts": {
+    "profiles/unigate/workspace/00-architecture/business-arch.md": "d222c2f359543277992680211af75314f601e16b4bac3c70ca367dc598ed55a1",
+    "profiles/unigate/workspace/00-architecture/application-arch.md": "f1c2e7ab457814e3090c1482e7f8ccfe684c7557eaffefa720b07aa99d8b4c20",
+    "profiles/unigate/workspace/00-architecture/function-list.md": "81d1cb625699697c4c51ac25f9515b1573917e6e2dd205bfbb6aa452de95e4f2",
+    "profiles/unigate/workspace/02-detailed/prd/unigate-prd.md": "5d38775840378f4d1d6a5ca538fead1a7fd0dfaf7f8a1e5b013d84d114774607",
+    "profiles/unigate/workspace/02-detailed/prd/unigate-domain-model.md": "330528370a58df48ffe1b9fb4af8068a8887cba33d34d4abf7c50f54b55f658f",
+    "profiles/unigate/workspace/02-detailed/api/api-unigate.md": "0b9ff5e082bc06186c4faba037abab981f649d30b05e85749f053e6db4b7bf98",
+    "profiles/unigate/workspace/02-detailed/api/openapi-unigate.json": "cc185ea09d0f90ad1843e5716e7c5843566767ccce6e367dc4f26e667de6612b",
+    "profiles/unigate/workspace/02-detailed/api/data-model-unigate.md": "517ceac5e628f56c8fc6072a66b8aab85c892561905021a27438af4ae213564c",
+    "profiles/unigate/workspace/02-detailed/interaction/page-contracts.json": "31ee98f68ac122da0db2a6fcbbf92a1209b2fe3375a9b08a50e971fa8ebc68ff",
+    "profiles/unigate/workspace/02-detailed/interaction/README.md": "ca1b919023f016c3d76a0821bc8145915e50cff7f0f8c9269108f80313f1cd5b",
+    "profiles/unigate/workspace/02-detailed/interaction/shared/unigate/unigate.md": "f6e3d0319ebdc3476a66320480da110ebdc46803a9d330a71d71961238335844",
+    "profiles/unigate/workspace/02-detailed/interaction/admin/unigate/unigate.md": "8db2df89caf8034489d1e8a61255c71497f56ff3cd3290e0953b95adcf8bb18c",
+    "profiles/unigate/workspace/02-detailed/interaction/organizer/unigate/unigate.md": "21a72934a76b883794fd1287faf0959681c1308c90acf8a6235e5128ddb2351c",
+    "profiles/unigate/workspace/02-detailed/interaction/checker/unigate/unigate.md": "e539355dadfb4df9cce3c93c5fd7f2339ce47ab77e874f707bee1df4dc1f03ea",
+    "profiles/unigate/workspace/02-detailed/interaction/reader/unigate/unigate.md": "c1284c6885dacfd0ec7e214ea80c79d387168063e82094da6edabe1849c85985",
+    "profiles/unigate/workspace/02-detailed/interaction/participant/unigate/unigate.md": "89d0b3fc07693ff42eef2189bfb7694c7c695da849436964718af421f1370640",
+    "profiles/unigate/workspace/01-solution/common-spec/03-common-enums.md": "68737926768d789f4e512d9dfd8632c55a80c5efa93cc3813e4309d581a1a602",
+    "profiles/unigate/workspace/01-solution/common-spec/04-business-enum.md": "8221185b2967d5d237022a4ac45acbfdeef10be6faaf6205fa7e7832850210aa",
+    "profiles/unigate/workspace/01-solution/common-spec/05-select-service-pool.md": "5cfcedd9d5e5f91ecf3a44a396d73d298e8e6fe46155b48dd555c3f3ddcdd121"
+  },
+  "gateDecisionMadeByThisTool": false,
+  "limitations": [
+    "Final Gate1 requires manual review and a separate signed-off design report",
+    "Not a complete OpenAPI validator, application test, device check, or original-engine checklist PASS"
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "env": {
+    "ACTIVE_PROFILE": "unigate",
+    "ACTIVE_STACKS": "springboot-vue-web"
+  }
+}

@@ -1,0 +1,28 @@
+apiVersion: 1
+profile:
+  name: springboot-vue-web
+  type: techstack
+  title: Java Spring Boot 与 Vue Web 设计栈
+  depends: []
+stack:
+  layers: [backend, frontend]
+  requires_env: []
+  build:
+    command: "mvn -f backend/pom.xml verify"
+    module_pattern: "{module}"
+  codegen:
+    orchestrator_agent: agents/springboot-web-orchestrator.md
+    frontend_agent: agents/vue-web-orchestrator.md
+    specs: skills/web-stack-specs/SKILL.md
+    api_spec: skills/web-stack-specs/api-conventions.md
+  validation:
+    rules: [rules/web-stack-rules.md]
+assets:
+  agents:
+    - agents/springboot-web-orchestrator.md
+    - agents/vue-web-orchestrator.md
+  skills:
+    - skills/web-stack-specs
+  rules:
+    - rules/web-stack-rules.md
+  commands: []

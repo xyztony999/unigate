@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 1,
+  "measuredAt": "2026-10-21T15:18:41.867Z",
+  "command": "npm run test:coverage",
+  "provider": "@vitest/coverage-v8 4.1.0",
+  "node": "v22.23.3",
+  "scope": "All src/**/*.ts and src/**/*.vue, including untested App/main/router. Only generated API type aliases excluded because they have no runtime code.",
+  "sourceAndTestSha256": "534497518d3eccb6a500e511cee67507b220fff02d18256a328bb394595f1e8b",
+  "total": {
+    "lines": {
+      "total": 393,
+      "covered": 342,
+      "skipped": 0,
+      "pct": 87.02
+    },
+    "statements": {
+      "total": 1268,
+      "covered": 875,
+      "skipped": 0,
+      "pct": 69
+    },
+    "functions": {
+      "total": 302,
+      "covered": 195,
+      "skipped": 0,
+      "pct": 64.56
+    },
+    "branches": {
+      "total": 1563,
+      "covered": 1058,
+      "skipped": 0,
+      "pct": 67.69
+    },
+    "branchesTrue": {
+      "total": 0,
+      "covered": 0,
+      "skipped": 0,
+      "pct": 100
+    }
+  },
+  "allVue": {
+    "statements": {
+      "total": 959,
+      "covered": 620,
+      "pct": 64.65
+    },
+    "branches": {
+      "total": 1219,
+      "covered": 793,
+      "pct": 65.05
+    },
+    "functions": {
+      "total": 251,
+      "covered": 153,
+      "pct": 60.96
+    },
+    "lines": {
+      "total": 253,
+      "covered": 214,
+      "pct": 84.58
+    }
+  },
+  "components": {
+    "statements": {
+      "total": 74,
+      "covered": 56,
+      "pct": 75.68
+    },
+    "branches": {
+      "total": 162,
+      "covered": 122,
+      "pct": 75.31
+    },
+    "functions": {
+      "total": 51,
+      "covered": 37,
+      "pct": 72.55
+    },
+    "lines": {
+      "total": 38,
+      "covered": 33,
+      "pct": 86.84
+    }
+  },
+  "views": {
+    "statements": {
+      "total": 826,
+      "covered": 564,
+      "pct": 68.28
+    },
+    "branches": {
+      "total": 988,
+      "covered": 671,
+      "pct": 67.91
+    },
+    "functions": {
+      "total": 176,
+      "covered": 116,
+      "pct": 65.91
+    },
+    "lines": {
+      "total": 197,
+      "covered": 181,
+      "pct": 91.88
+    }
+  },
+  "lib": {
+    "statements": {
+      "total": 298,
+      "covered": 255,
+      "pct": 85.57
+    },
+    "branches": {
+      "total": 338,
+      "covered": 265,
+      "pct": 78.4
+    },
+    "functions": {
+      "total": 46,
+      "covered": 42,
+      "pct": 91.3
+    },
+    "lines": {
+      "total": 133,
+      "covered": 128,
+      "pct": 96.24
+    }
+  },
+  "zeroStatementCoverage": [
+    "src/App.vue",
+    "src/main.ts",
+    "src/router.ts"
+  ],
+  "limitations": [
+    "Component tests use controlled API responses; these values do not include real-backend browser E2E coverage.",
+    "Android camera/scanner/kiosk OS behavior and real third-party account/delivery paths remain device/provider validation tasks.",
+    "No synthetic threshold is configured by the active stack; counts are measured, not inferred from passing tests."
+  ]
+}

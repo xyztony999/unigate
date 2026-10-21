@@ -1,0 +1,203 @@
+{
+  "scope": "project-mechanical-document-checks-only",
+  "contractDecision": "ADR-042",
+  "projectBasisDecision": "ADR-043",
+  "projectBasisAdopted": true,
+  "apiVersion": "0.3.0",
+  "operationCount": 85,
+  "checks": [
+    {
+      "name": "schema-references",
+      "status": "PASS",
+      "evidence": "1229 local references resolve"
+    },
+    {
+      "name": "operation-uniqueness",
+      "status": "PASS",
+      "evidence": "85 unique operations and paths"
+    },
+    {
+      "name": "routes",
+      "status": "PASS",
+      "evidence": "version/domain/resource/action"
+    },
+    {
+      "name": "operation-index",
+      "status": "PASS",
+      "evidence": "index matches paths/methods"
+    },
+    {
+      "name": "closed-objects",
+      "status": "PASS",
+      "evidence": "270 closed object schemas"
+    },
+    {
+      "name": "semantic-write-ids",
+      "status": "PASS",
+      "evidence": "all semantic writes require operationId"
+    },
+    {
+      "name": "write-methods",
+      "status": "PASS",
+      "evidence": "writes POST; OAuth GET callback has one-time state exception"
+    },
+    {
+      "name": "post-csrf",
+      "status": "PASS",
+      "evidence": "all POSTs declare CSRF, including anonymous/safe queries"
+    },
+    {
+      "name": "anonymous-context",
+      "status": "PASS",
+      "evidence": "original anonymous context header required"
+    },
+    {
+      "name": "bootstrap-continuity",
+      "status": "PASS",
+      "evidence": "public continuity marker plus no cross-context automatic replay"
+    },
+    {
+      "name": "response-envelopes",
+      "status": "PASS",
+      "evidence": "OK/message/data/requestId; binary download explicit exception"
+    },
+    {
+      "name": "documented-operations",
+      "status": "PASS",
+      "evidence": "each operation has a human-readable contract"
+    },
+    {
+      "name": "six-chapters",
+      "status": "PASS",
+      "evidence": "six required chapter headings"
+    },
+    {
+      "name": "pagination",
+      "status": "PASS",
+      "evidence": "ordinary pageSize cap100; gate lookup fixed10"
+    },
+    {
+      "name": "import-selection",
+      "status": "PASS",
+      "evidence": "nonempty unique selected row set"
+    },
+    {
+      "name": "own-party-boundary",
+      "status": "PASS",
+      "evidence": "own party derived from capability cookie"
+    },
+    {
+      "name": "own-grants",
+      "status": "PASS",
+      "evidence": "FL-R-002 has own-grant read API; cannot request another account"
+    },
+    {
+      "name": "gate-minimum-data",
+      "status": "PASS",
+      "evidence": "lookup response has only masked candidate fields"
+    },
+    {
+      "name": "reissue-response",
+      "status": "PASS",
+      "evidence": "no private access returned unless explicitly rotated"
+    },
+    {
+      "name": "operation-lookup-action",
+      "status": "PASS",
+      "evidence": "generic result lookup includes original action"
+    },
+    {
+      "name": "connection-scope",
+      "status": "PASS",
+      "evidence": "event-scoped resource access is explicit"
+    },
+    {
+      "name": "fl-role-coverage",
+      "status": "PASS",
+      "evidence": "43 FL functions have a same-AA operation with matching role"
+    },
+    {
+      "name": "aa-leaves",
+      "status": "PASS",
+      "evidence": "23 AA leaves covered"
+    },
+    {
+      "name": "enum-values",
+      "status": "PASS",
+      "evidence": "29 enum pools match response value objects"
+    },
+    {
+      "name": "enum-pool-files",
+      "status": "PASS",
+      "evidence": "every code/label exists in the maintained enum files"
+    },
+    {
+      "name": "no-stale-protocol-names",
+      "status": "PASS",
+      "evidence": "prose uses COMPANIONS/TOTAL/KEEP_SEPARATE"
+    },
+    {
+      "name": "gate-auth",
+      "status": "PASS",
+      "evidence": "STAFF+DEVICE vs KIOSK-only branch; conditional runtime enforcement still required"
+    },
+    {
+      "name": "unknown-result-semantics",
+      "status": "PASS",
+      "evidence": "replay never means a new admission; no new operation on unknown"
+    },
+    {
+      "name": "json-examples",
+      "status": "PASS",
+      "evidence": "3 JSON examples parse and refer to the same operation, not executed requests"
+    },
+    {
+      "name": "design-tables",
+      "status": "PASS",
+      "evidence": "25 design DDL tables; SQL not executed"
+    },
+    {
+      "name": "source-column-inputs",
+      "status": "PASS",
+      "evidence": "mapping has actual columns and event-assigned thin connections, never guessed headers or admin secrets"
+    },
+    {
+      "name": "admin-event-selector",
+      "status": "PASS",
+      "evidence": "authorization target selector reveals no roster/allocation/attendance"
+    },
+    {
+      "name": "anonymous-original-result",
+      "status": "PASS",
+      "evidence": "reload can read original result without storing form PII or creating another group"
+    },
+    {
+      "name": "cleanup-scope-output",
+      "status": "PASS",
+      "evidence": "cleanup reports six managed ranges including backup coverage"
+    },
+    {
+      "name": "ui-state-inputs",
+      "status": "PASS",
+      "evidence": "history/window/snapshot labels have actual API inputs"
+    },
+    {
+      "name": "gate-global-operation-key",
+      "status": "PASS",
+      "evidence": "same event/action/operation cannot become a new write by changing group/device"
+    },
+    {
+      "name": "source-inventory",
+      "status": "PASS",
+      "evidence": "164 embedded CH/GL source rows recovered and fingerprinted; missing definitions remain explicit"
+    }
+  ],
+  "passed": 37,
+  "failed": 0,
+  "originalEngineD3Passed": false,
+  "limitations": [
+    "No HTTP/DB/device/provider tests",
+    "Not a complete OpenAPI or JSON Schema validator",
+    "Original assets/undefined clauses remain unavailable; ADR-043 authorizes the project basis, never an original-engine PASS"
+  ]
+}

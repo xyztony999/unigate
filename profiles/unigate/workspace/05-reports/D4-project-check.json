@@ -1,0 +1,153 @@
+{
+  "scope": "D4-project-mechanical-document-checks",
+  "basis": "ADR-043",
+  "version": "1.0",
+  "pageCount": 33,
+  "operationCount": 85,
+  "fieldBindingCount": 2253,
+  "passed": 26,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "module-input",
+      "status": "PASS",
+      "evidence": "module/app/API and adopted basis consistent"
+    },
+    {
+      "name": "page-routes",
+      "status": "PASS",
+      "evidence": "33 unique page IDs and routes"
+    },
+    {
+      "name": "role-groups",
+      "status": "PASS",
+      "evidence": "five business roles plus shared documents; kiosk is a participant mode"
+    },
+    {
+      "name": "operation-coverage",
+      "status": "PASS",
+      "evidence": "all 85 API operations mapped; OAuth callback protocol-only"
+    },
+    {
+      "name": "action-contracts",
+      "status": "PASS",
+      "evidence": "all Action methods/paths exactly match OpenAPI"
+    },
+    {
+      "name": "action-identity",
+      "status": "PASS",
+      "evidence": "auth/role upper bounds copied without expansion"
+    },
+    {
+      "name": "staff-role-boundaries",
+      "status": "PASS",
+      "evidence": "ANON/device subflows explicit; STAFF/GATE preserve caller role"
+    },
+    {
+      "name": "field-paths",
+      "status": "PASS",
+      "evidence": "2253 request/response bindings resolve in source schemas"
+    },
+    {
+      "name": "field-types",
+      "status": "PASS",
+      "evidence": "all binding types match source schema references/primitives"
+    },
+    {
+      "name": "field-limits",
+      "status": "PASS",
+      "evidence": "all declared limits/defaults are identical to source"
+    },
+    {
+      "name": "array-input-controls",
+      "status": "PASS",
+      "evidence": "array-valued roles/fields/columns/event scopes use multiple selection, not a scalar control"
+    },
+    {
+      "name": "list-columns",
+      "status": "PASS",
+      "evidence": "every visible list column resolves in the actual response"
+    },
+    {
+      "name": "dictionary-binding",
+      "status": "PASS",
+      "evidence": "29 shared dictionary pools, no invented page enum"
+    },
+    {
+      "name": "fl-page-coverage",
+      "status": "PASS",
+      "evidence": "all 43 confirmed functions map to at least one page"
+    },
+    {
+      "name": "entry-exit-accessibility",
+      "status": "PASS",
+      "evidence": "every page states entry/exit/touch/accessibility requirements"
+    },
+    {
+      "name": "state-coverage",
+      "status": "PASS",
+      "evidence": "all pages define load/empty/error/unknown/expiry states"
+    },
+    {
+      "name": "checker-no-privileged-write",
+      "status": "PASS",
+      "evidence": "checkers have no increase/correction/reissue/export/approval"
+    },
+    {
+      "name": "reader-read-only",
+      "status": "PASS",
+      "evidence": "reader pages expose only safe reads, no export"
+    },
+    {
+      "name": "kiosk-scope",
+      "status": "PASS",
+      "evidence": "kiosk has only current device/group/operation API, no roster lookup"
+    },
+    {
+      "name": "kiosk-reset",
+      "status": "PASS",
+      "evidence": "5s success / 30s idle; unknown never auto-clears pending operation"
+    },
+    {
+      "name": "gate-submit-guard",
+      "status": "PASS",
+      "evidence": "count/window/unknown guard declared for each scanner"
+    },
+    {
+      "name": "replay-never-release",
+      "status": "PASS",
+      "evidence": "original-result query never displayed as a new release"
+    },
+    {
+      "name": "registration-reload",
+      "status": "PASS",
+      "evidence": "original anonymous result recovery avoids durable form PII"
+    },
+    {
+      "name": "sensitive-fields",
+      "status": "PASS",
+      "evidence": "secret values are system/memory/password bindings, not list columns"
+    },
+    {
+      "name": "spec-documents",
+      "status": "PASS",
+      "evidence": "six PageSpec documents with matching version metadata and changelog"
+    },
+    {
+      "name": "page-headings",
+      "status": "PASS",
+      "evidence": "all 33 route specifications emitted into readable documents"
+    }
+  ],
+  "interactionConfirmed": true,
+  "confirmationDecision": "ADR-044",
+  "gate1EvaluatedByThisTool": false,
+  "originalFxChecklistPassed": false,
+  "apiSha256": "cc185ea09d0f90ad1843e5716e7c5843566767ccce6e367dc4f26e667de6612b",
+  "pageContractSha256": "31ee98f68ac122da0db2a6fcbbf92a1209b2fe3375a9b08a50e971fa8ebc68ff",
+  "limitations": [
+    "Documents only, not HTTP/Vue/device tests",
+    "Gate 1 is assessed independently",
+    "Original FX full checklist is not claimed"
+  ]
+}

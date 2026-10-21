@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-label="UniGate 自助检票横屏"><title>UniGate 自助检票</title>
+<rect x="0" y="0" width="1600" height="1000" rx="0" fill="#FFFFFF"/>
+<text x="56" y="58.4" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#176353">UniGate · 自助检票</text>
+<text x="56" y="113.9" font-family="Microsoft YaHei, sans-serif" font-size="34" font-weight="700" fill="#182B2A">新生与家长见面会</text>
+<rect x="1276" y="62" width="268" height="48" rx="24" fill="#EAF3EE"/>
+<text x="1338.5" y="93.85" font-family="Microsoft YaHei, sans-serif" font-size="21" font-weight="400" fill="#176353">在线 · 检票开放</text>
+<line x1="56" y1="160" x2="1544" y2="160" stroke="#D9E1DD" stroke-width="1"/>
+<rect x="56" y="218" width="644" height="622" rx="20" fill="#253C39"/>
+<line x1="166" y1="320" x2="208" y2="320" stroke="#B5D9CA" stroke-width="4"/>
+<line x1="166" y1="320" x2="166" y2="362" stroke="#B5D9CA" stroke-width="4"/>
+<line x1="590" y1="320" x2="548" y2="320" stroke="#B5D9CA" stroke-width="4"/>
+<line x1="590" y1="320" x2="590" y2="362" stroke="#B5D9CA" stroke-width="4"/>
+<line x1="166" y1="744" x2="208" y2="744" stroke="#B5D9CA" stroke-width="4"/>
+<line x1="166" y1="744" x2="166" y2="702" stroke="#B5D9CA" stroke-width="4"/>
+<line x1="590" y1="744" x2="548" y2="744" stroke="#B5D9CA" stroke-width="4"/>
+<line x1="590" y1="744" x2="590" y2="702" stroke="#B5D9CA" stroke-width="4"/>
+<text x="258.0" y="511.5" font-family="Microsoft YaHei, sans-serif" font-size="30" font-weight="700" fill="#FFFFFF">已识别您的入场码</text>
+<text x="263.0" y="566.55" font-family="Microsoft YaHei, sans-serif" font-size="23" font-weight="400" fill="#C0D3CC">请在右侧确认本次人数</text>
+<text x="784" y="257.0" font-family="Microsoft YaHei, sans-serif" font-size="40" font-weight="700" fill="#182B2A">这次共有几位入场？</text>
+<text x="784" y="319.55" font-family="Microsoft YaHei, sans-serif" font-size="23" font-weight="400" fill="#647371">本组剩余可入场</text>
+<text x="784" y="427.5" font-family="Microsoft YaHei, sans-serif" font-size="90" font-weight="700" fill="#176353">2</text>
+<text x="866" y="433.8" font-family="Microsoft YaHei, sans-serif" font-size="28" font-weight="400" fill="#647371">人</text>
+<text x="784" y="489.25" font-family="Microsoft YaHei, sans-serif" font-size="25" font-weight="400" fill="#182B2A">已批准 3 人   ·   已入场 1 人</text>
+<text x="784" y="553.4" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#182B2A">本次入场人数</text>
+<rect x="784" y="581" width="760" height="82" rx="14" fill="#FFFFFF" stroke="#D9E1DD"/>
+<line x1="874" y1="581" x2="874" y2="663" stroke="#D9E1DD" stroke-width="1"/>
+<line x1="1454" y1="581" x2="1454" y2="663" stroke="#D9E1DD" stroke-width="1"/>
+<text x="817.25" y="631.2" font-family="Microsoft YaHei, sans-serif" font-size="32" font-weight="400" fill="#647371">−</text>
+<text x="1152.25" y="633.3" font-family="Microsoft YaHei, sans-serif" font-size="38" font-weight="700" fill="#182B2A">1</text>
+<text x="1487.25" y="631.2" font-family="Microsoft YaHei, sans-serif" font-size="32" font-weight="400" fill="#176353">+</text>
+<rect x="784" y="710" width="760" height="94" rx="16" fill="#176353"/>
+<text x="1064.75" y="767.2" font-family="Microsoft YaHei, sans-serif" font-size="32" font-weight="700" fill="#FFFFFF">确认 1 人入场</text>
+<text x="1056.0" y="864.4" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="400" fill="#176353">暂不检票，返回扫码</text>
+<text x="646.0" y="954.7" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="400" fill="#647371">需要帮助，请联系现场工作人员</text>
+</svg>

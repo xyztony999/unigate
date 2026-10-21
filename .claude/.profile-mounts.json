@@ -1,0 +1,38 @@
+{
+  "apiVersion": 1,
+  "active": "unigate",
+  "stacks": [
+    "springboot-vue-web"
+  ],
+  "mounts": [
+    {
+      "layer": "springboot-vue-web",
+      "src": "profiles/springboot-vue-web/skills/web-stack-specs",
+      "dst": ".claude/skills/web-stack-specs",
+      "mode": "copy"
+    },
+    {
+      "layer": "springboot-vue-web",
+      "src": "profiles/springboot-vue-web/agents/springboot-web-orchestrator.md",
+      "dst": ".claude/agents/springboot-web-orchestrator.md",
+      "mode": "copy"
+    },
+    {
+      "layer": "springboot-vue-web",
+      "src": "profiles/springboot-vue-web/agents/vue-web-orchestrator.md",
+      "dst": ".claude/agents/vue-web-orchestrator.md",
+      "mode": "copy"
+    },
+    {
+      "layer": "springboot-vue-web",
+      "src": "profiles/springboot-vue-web/rules/web-stack-rules.md",
+      "dst": ".claude/rules/web-stack-rules.md",
+      "mode": "copy"
+    }
+  ],
+  "claudemd_imports": [
+    "@profiles/unigate/CLAUDE.md"
+  ],
+  "created_with": "engine-cli 0.4.0",
+  "ts": "2026-10-20T10:40:35.242Z"
+}

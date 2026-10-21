@@ -1,0 +1,208 @@
+{
+  "scope": "Gate2-cross-stack-evidence",
+  "timestamp": "2026-10-21T15:23:34.097792+00:00",
+  "passed": 16,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "design-fingerprints",
+      "status": "PASS",
+      "evidence": "All 19 adopted Gate1 design artifacts remain byte-identical"
+    },
+    {
+      "name": "frontend-contract-fingerprint",
+      "status": "PASS",
+      "evidence": "Generated runtime contract points to adopted OpenAPI"
+    },
+    {
+      "name": "operation-path-auth-status-schema",
+      "status": "PASS",
+      "evidence": "All 85 operations, paths, methods, identities, roles, errors and status codes match"
+    },
+    {
+      "name": "schemas-and-enums",
+      "status": "PASS",
+      "evidence": "All 299 DTO schemas and 29 enum pools match"
+    },
+    {
+      "name": "page-route-fields",
+      "status": "PASS",
+      "evidence": "All 33 routes, actions, columns and field bindings match PageSpec"
+    },
+    {
+      "name": "router-contract-binding",
+      "status": "PASS",
+      "evidence": "Vue Router consumes the validated generated route set"
+    },
+    {
+      "name": "typed-operation-bindings",
+      "status": "PASS",
+      "evidence": "Every operation has its adopted request/data TypeScript mapping"
+    },
+    {
+      "name": "backend-shared-contract",
+      "status": "PASS",
+      "evidence": "Server loads the same method/path index and validates requests plus transaction success data"
+    },
+    {
+      "name": "backend-packaged-contract",
+      "status": "PASS",
+      "evidence": "Compiled backend resource equals adopted API, rather than a separately maintained path list"
+    },
+    {
+      "name": "backend-operation-dispatch-presence",
+      "status": "PASS",
+      "evidence": {
+        "operationCount": 85,
+        "missing": [],
+        "kind": "static presence; runtime tested separately"
+      }
+    },
+    {
+      "name": "normalized-migration",
+      "status": "PASS",
+      "evidence": "25 normalized PostgreSQL tables; actual Flyway execution covered by database tests"
+    },
+    {
+      "name": "backend-test-evidence",
+      "status": "PASS",
+      "evidence": {
+        "tests": 47,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "name": "measured-backend-layer-coverage",
+      "status": "PASS",
+      "evidence": {
+        "metric": "JaCoCo LINE; includes nested classes; no core service exclusions",
+        "services": {
+          "covered": 2230,
+          "total": 2546,
+          "percent": 87.59
+        },
+        "controller": {
+          "covered": 248,
+          "total": 316,
+          "percent": 78.48
+        }
+      }
+    },
+    {
+      "name": "measured-vue-component-coverage",
+      "status": "PASS",
+      "evidence": {
+        "metric": "V8 statements; every Vue file including App; excludes no core implementation",
+        "allVue": {
+          "statements": {
+            "total": 959,
+            "covered": 620,
+            "pct": 64.65
+          },
+          "branches": {
+            "total": 1219,
+            "covered": 793,
+            "pct": 65.05
+          },
+          "functions": {
+            "total": 251,
+            "covered": 153,
+            "pct": 60.96
+          },
+          "lines": {
+            "total": 253,
+            "covered": 214,
+            "pct": 84.58
+          }
+        },
+        "total": {
+          "lines": {
+            "total": 393,
+            "covered": 342,
+            "skipped": 0,
+            "pct": 87.02
+          },
+          "statements": {
+            "total": 1268,
+            "covered": 875,
+            "skipped": 0,
+            "pct": 69
+          },
+          "functions": {
+            "total": 302,
+            "covered": 195,
+            "skipped": 0,
+            "pct": 64.56
+          },
+          "branches": {
+            "total": 1563,
+            "covered": 1058,
+            "skipped": 0,
+            "pct": 67.69
+          },
+          "branchesTrue": {
+            "total": 0,
+            "covered": 0,
+            "skipped": 0,
+            "pct": 100
+          }
+        }
+      }
+    },
+    {
+      "name": "frontend-coverage-source-fingerprint",
+      "status": "PASS",
+      "evidence": "Measured coverage matches current source, tests, lock and runner configuration"
+    },
+    {
+      "name": "real-browser-workflow-evidence",
+      "status": "PASS",
+      "evidence": {
+        "timestamp": "2026-10-21T15:21:52.986Z",
+        "results": [
+          {
+            "name": "staff-browser-login",
+            "status": "PASS"
+          },
+          {
+            "name": "browser-create-event-and-success-navigation",
+            "status": "PASS"
+          },
+          {
+            "name": "mobile-browser-registration-and-group-qr",
+            "status": "PASS"
+          },
+          {
+            "name": "kiosk-activation-landscape-and-split-admission",
+            "status": "PASS"
+          },
+          {
+            "name": "committed-response-loss-original-id-recovery-and-no-double-count",
+            "status": "PASS"
+          },
+          {
+            "name": "no-roster-pii-or-ticket-secret-in-browser-storage",
+            "status": "PASS"
+          },
+          {
+            "name": "eighteen-management-pages-load-real-api-without-errors",
+            "status": "PASS"
+          },
+          {
+            "name": "browser-csv-upload-map-select-and-atomic-group-import",
+            "status": "PASS"
+          }
+        ],
+        "kind": "local development service, Edge headless; no physical-device claim"
+      }
+    }
+  ],
+  "gateDecisionMadeByThisTool": false,
+  "limitations": [
+    "Static contract/presence checks do not prove all runtime branches",
+    "Build, component tests, coverage and rule review are separate evidence",
+    "No real provider credentials, Android hardware or capacity certification"
+  ]
+}

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="880" viewBox="0 0 1600 880" role="img" aria-label="UniGate / 结果与异常状态"><title>UniGate / 结果与异常状态</title><rect width="100%" height="100%" fill="#F3F5F2" />
+<text x="50.00" y="64.60" font-family="Microsoft YaHei, sans-serif" font-size="36" font-weight="700" fill="#182B2A">UniGate / 结果与异常状态</text>
+<rect x="50" y="138.0" width="480" height="330" rx="18" fill="#FFFFFF" stroke="#D9E1DD" />
+<rect x="72" y="160.0" width="436" height="42" rx="9" fill="#EAF3EE" />
+<text x="92.00" y="187.3" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#176353">检票成功</text>
+<text x="76.00" y="258.95" font-family="Microsoft YaHei, sans-serif" font-size="27" font-weight="700" fill="#176353">允许 1 人入场</text>
+<text x="76.00" y="310.3" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="400" fill="#647371">本次已登记 1 人 · 本组剩余 1 人</text>
+<rect x="76" y="387.0" width="428" height="62" rx="12" fill="#176353" />
+<text x="232.50" y="424.65" font-family="Microsoft YaHei, sans-serif" font-size="19" font-weight="700" fill="#FFFFFF">完成 / 下一组</text>
+<rect x="560" y="138.0" width="480" height="330" rx="18" fill="#FFFFFF" stroke="#D9E1DD" />
+<rect x="582" y="160.0" width="436" height="42" rx="9" fill="#EAF0EE" />
+<text x="602.00" y="187.3" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#182B2A">已登记</text>
+<text x="586.00" y="258.95" font-family="Microsoft YaHei, sans-serif" font-size="27" font-weight="700" fill="#182B2A">这次操作已经记录</text>
+<text x="586.00" y="310.3" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="400" fill="#647371">原操作登记 1 人，请工作人员核对</text>
+<text x="586.00" y="347.3" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="400" fill="#647371">请勿重复办理入场</text>
+<rect x="586" y="387.0" width="428" height="62" rx="12" fill="#FFFFFF" stroke="#D9E1DD" />
+<text x="724.00" y="424.65" font-family="Microsoft YaHei, sans-serif" font-size="19" font-weight="700" fill="#176353">联系工作人员核对</text>
+<rect x="1070" y="138.0" width="480" height="330" rx="18" fill="#FFFFFF" stroke="#D9E1DD" />
+<rect x="1092" y="160.0" width="436" height="42" rx="9" fill="#FBF3DF" />
+<text x="1112.00" y="187.3" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#8A5B10">结果待确认</text>
+<text x="1096.00" y="258.95" font-family="Microsoft YaHei, sans-serif" font-size="27" font-weight="700" fill="#8A5B10">请勿重复扫码或提交</text>
+<text x="1096.00" y="310.3" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="400" fill="#647371">本次结果尚未确认，请联系工作人员</text>
+<text x="1096.00" y="347.3" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="400" fill="#647371">连接恢复后将核对登记结果</text>
+<rect x="1096" y="387.0" width="428" height="62" rx="12" fill="#EAF0EE" />
+<text x="1224.50" y="424.65" font-family="Microsoft YaHei, sans-serif" font-size="19" font-weight="700" fill="#647371">等待连接恢复后核对</text>
+<rect x="50" y="510.0" width="480" height="330" rx="18" fill="#FFFFFF" stroke="#D9E1DD" />
+<rect x="72" y="532.0" width="436" height="42" rx="9" fill="#FAEFEC" />
+<text x="92.00" y="559.3" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#9C3E36">无效票 / 名额不足</text>
+<text x="76.00" y="630.95" font-family="Microsoft YaHei, sans-serif" font-size="27" font-weight="700" fill="#9C3E36">暂时无法办理入场</text>
+<text x="76.00" y="682.3" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="400" fill="#647371">请核对是否为本活动的有效入场码</text>
+<text x="76.00" y="719.3" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="400" fill="#647371">剩余名额不足时由工作人员协助</text>
+<rect x="76" y="759.0" width="428" height="62" rx="12" fill="#FFFFFF" stroke="#D9E1DD" />
+<text x="233.00" y="796.65" font-family="Microsoft YaHei, sans-serif" font-size="19" font-weight="700" fill="#176353">联系工作人员</text>
+<rect x="560" y="510.0" width="480" height="330" rx="18" fill="#FFFFFF" stroke="#D9E1DD" />
+<rect x="582" y="532.0" width="436" height="42" rx="9" fill="#EAF0EE" />
+<text x="602.00" y="559.3" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#182B2A">检票暂停 / 终端失效</text>
+<text x="586.00" y="630.95" font-family="Microsoft YaHei, sans-serif" font-size="27" font-weight="700" fill="#182B2A">当前暂停检票</text>
+<text x="586.00" y="682.3" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="400" fill="#647371">由工作人员确认活动或终端状态</text>
+<rect x="586" y="759.0" width="428" height="62" rx="12" fill="#EAF0EE" />
+<text x="724.00" y="796.65" font-family="Microsoft YaHei, sans-serif" font-size="19" font-weight="700" fill="#647371">等待工作人员处理</text>
+<rect x="1070" y="510.0" width="480" height="330" rx="18" fill="#FFFFFF" stroke="#D9E1DD" />
+<rect x="1092" y="532.0" width="436" height="42" rx="9" fill="#FBF3DF" />
+<text x="1112.00" y="559.3" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#8A5B10">网络连接中断</text>
+<text x="1096.00" y="630.95" font-family="Microsoft YaHei, sans-serif" font-size="27" font-weight="700" fill="#8A5B10">本机暂时无法检票</text>
+<text x="1096.00" y="682.3" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="400" fill="#647371">网络连接中断，检票暂不可用</text>
+<text x="1096.00" y="719.3" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="400" fill="#647371">请联系现场工作人员协助</text>
+<rect x="1096" y="759.0" width="428" height="62" rx="12" fill="#EAF0EE" />
+<text x="1253.00" y="796.65" font-family="Microsoft YaHei, sans-serif" font-size="19" font-weight="700" fill="#647371">等待连接恢复</text>
+</svg>

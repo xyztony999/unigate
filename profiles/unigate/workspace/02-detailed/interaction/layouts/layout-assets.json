@@ -1,0 +1,106 @@
+{
+  "version": "1.0",
+  "date": "2026-10-21",
+  "scope": "Static design illustrations only; synthetic data; no application implementation",
+  "assets": [
+    {
+      "name": "staff-layout",
+      "width": 1600,
+      "height": 1040,
+      "textRuns": 37,
+      "bounds": "PASS",
+      "removedAnnotations": 11
+    },
+    {
+      "name": "checkin-states",
+      "width": 1600,
+      "height": 880,
+      "textRuns": 29,
+      "bounds": "PASS",
+      "removedAnnotations": 10
+    },
+    {
+      "name": "kiosk-layout",
+      "width": 1600,
+      "height": 1000,
+      "textRuns": 17,
+      "bounds": "PASS",
+      "orientation": "landscape",
+      "aspectRatio": "16:10"
+    },
+    {
+      "name": "kiosk-ready",
+      "width": 1600,
+      "height": 1000,
+      "textRuns": 9,
+      "bounds": "PASS",
+      "orientation": "landscape",
+      "aspectRatio": "16:10"
+    }
+  ],
+  "pageIds": [
+    "O09",
+    "C01",
+    "P04"
+  ],
+  "status": "confirmed",
+  "pngScale": 2,
+  "contractChanged": false,
+  "bindings": [
+    {
+      "schema": "EventView",
+      "field": "title"
+    },
+    {
+      "schema": "DeviceSessionView",
+      "field": "device.name"
+    },
+    {
+      "schema": "DeviceSessionView",
+      "field": "eventStatus"
+    },
+    {
+      "schema": "GatePreview",
+      "field": "approvedSize"
+    },
+    {
+      "schema": "GatePreview",
+      "field": "netAdmitted"
+    },
+    {
+      "schema": "GatePreview",
+      "field": "remainingCount"
+    },
+    {
+      "schema": "GateCommitRequest",
+      "field": "count"
+    },
+    {
+      "schema": "GateResult",
+      "field": "committedCount"
+    },
+    {
+      "schema": "GateResult",
+      "field": "remainingCount"
+    },
+    {
+      "schema": "GateResult",
+      "field": "committedAt"
+    },
+    {
+      "schema": "GateResult",
+      "field": "replayed"
+    },
+    {
+      "schema": "GateResult",
+      "field": "showAsNewAdmission"
+    }
+  ],
+  "presentation": "Customer-facing; design and engineering annotations removed",
+  "kioskOrientation": "landscape",
+  "confirmation": {
+    "decision": "ADR-045",
+    "date": "2026-10-21",
+    "scope": "Final layout acceptance and design-stage closure; no implementation authorization"
+  }
+}
