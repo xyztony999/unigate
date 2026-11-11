@@ -50,8 +50,8 @@ def main():
     ba3 = set(re.findall(r'^##### (2\.\d+\.\d+) ', doc['ba'], re.M))
     ba4 = set(re.findall(r'^###### (2\.\d+\.\d+\.\d+) ', doc['ba'], re.M))
     aa_refs = re.findall(r'追溯 BA (2\.\d+\.\d+(?:\.\d+)?)。', doc['aa'])
-    check('ba-aa-map', len(ba3) == 8 and len(ba4) == 17 and set(aa_refs) == ba4
-          and len(aa_refs) == len(set(aa_refs)), 'All 17 BA activities map once into AA; 8 BA capabilities retained')
+    check('ba-aa-map', len(ba3) == 6 and len(ba4) == 17 and set(aa_refs) == ba4
+          and len(aa_refs) == len(set(aa_refs)), 'All 17 BA activities map once into AA; 6 BA capabilities retained per ADR-047')
     aa_leaves = set(re.findall(r'^##### (2\.\d+\.\d+\.\d+) ', doc['aa'], re.M))
     fl = re.findall(r'^\| (FL-[AOCRP]-\d+).*?\| AA (2\.\d+\.\d+\.\d+) ', doc['fl'], re.M)
     page_fl = {f for p in pages['pages'] for f in p['fl']}
@@ -61,10 +61,10 @@ def main():
     check('prd-acceptance', len(set(re.findall(r'\| (AC-\d+) \|', doc['prd']))) == 16
           and all(role in doc['prd'] for role in ['系统管理员', '活动负责人', '检票员', '校方只读', '参与者']),
           '16 PRD acceptance scenarios and all five roles present; qualitative completeness manually reviewed')
-    roots = ['Event', 'RegistrationParty', 'ImportBatch', 'SourceConnection', 'DeviceSession', 'ExportJob', 'CleanupRun']
+    roots = ['Event', 'RegistrationParty', 'ImportBatch', 'SourceConnection', 'Device', 'ExportJob', 'CleanupRun', 'Account']
     check('domain-api-roots', all(n in doc['domain'] and n in doc['api'] for n in roots)
           and all(n in doc['domain'] for n in ['聚合根', '值对象', '过程数据', '子流程 I/O', '关联领域对象']),
-          'Seven confirmed aggregate names and five model categories trace to API service design')
+          'Eight confirmed aggregate names (ADR-047) and five model categories trace to API service design')
     check('api-completeness', all(o['request'] in spec['components']['schemas'] and o['response'] in spec['components']['schemas']
           and o['data'] in spec['components']['schemas'] for o in ops.values()) and bool(spec.get('x-errors'))
           and all(re.fullmatch(r'/api/v1/[a-z]+/[a-z-]+/[a-z-]+', o['path']) for o in ops.values()),
@@ -121,7 +121,7 @@ def main():
           'Design-only workspace required before pipeline; ADR-046 explicitly authorizes later implementation')
     report = {
         'scope': 'Gate1-independent-cross-stage-document-assertions',
-        'timestamp': datetime.now(timezone.utc).isoformat(), 'basis': ['ADR-043', 'ADR-044'],
+        'timestamp': datetime.now(timezone.utc).isoformat(), 'basis': ['ADR-043', 'ADR-044', 'ADR-047'],
         'passed': sum(r['status'] == 'PASS' for r in results), 'failed': sum(r['status'] == 'FAIL' for r in results),
         'checks': results,
         'artifacts': {str(p.relative_to(ROOT)).replace('\\', '/'): hashlib.sha256(p.read_bytes()).hexdigest() for p in files.values()},

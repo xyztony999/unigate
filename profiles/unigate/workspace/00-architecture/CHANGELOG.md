@@ -16,3 +16,12 @@
 
 - D3 v0.1新增API/OpenAPI/数据与事务设计，枚举及选择池同步；81个操作覆盖43项FL/23个AA子模块。21项项目补充静态检查通过；合同尚待审阅，插件原版检查资产缺失，D3保持partial。未进入D4或执行Gate1，无业务实现。
 - ADR-042—044：采用API、项目验收依据及D4七项交互，API0.3.0/33页PageSpec v1.0归档；独立Gate1 PASS，见../05-reports/gate1-unigate-2026-10-21.md。本次仅更新阶段引用与版本来源标注，无模块、业务层级或权限扩大。
+
+## 2026-11-11
+
+- 05-reports/domain-redivision-proposal.md v1.0：领域架构重划分提案（以Gate 2已交付实现为证据源，设计与实现脱节为动机）；用户确认采纳全部建议决策点，记ADR-047。
+- business-arch.md v0.5：L3 8→6（凭证交付并入资格与名额、现场两L3合并为现场检票与控制、报名及名单接收更名报名及名单接入），4个L2与17个L4及业务范围不变。
+- application-arch.md v0.5：模块8+3→6+3（连接与任务拆为外部连接+平台运行），业务/平台子模块17/6与AA叶23不变，调用关系按新模块名重标。
+- function-list.md v1.1：43项功能全部重挂AA v0.5新编号，条目ID/菜单名/功能点描述与角色覆盖不变。
+- 领域模型 v2.0：7上下文→8上下文+平台内核（ActivityAdmission拆为EventAdmin/Enrollment/Gate、Reporting解散、Identity/Connection拆分），聚合根7→8（DeviceSession更名Device迁Gate、新增Account）。
+- API api-unigate.md v0.4/data-model-unigate.md v0.4/openapi 0.3.0：85操作AA编号（§4.2/§5.2/x-aa-submodules）全部重挂；URL路径、DTO、枚举池（29组）、DDL（25表）零变更。代码未动，Gate 2结论不受影响；Gate 1待按新基线重跑，后端包结构重构（D-5b）及R1—R3边界修复待排期。

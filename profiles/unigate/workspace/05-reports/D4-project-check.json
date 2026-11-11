@@ -143,7 +143,7 @@
   "confirmationDecision": "ADR-044",
   "gate1EvaluatedByThisTool": false,
   "originalFxChecklistPassed": false,
-  "apiSha256": "cc185ea09d0f90ad1843e5716e7c5843566767ccce6e367dc4f26e667de6612b",
+  "apiSha256": "11bbf80bc240a617913ba02135fdb12ec6703f8e0eb623d414397f4d0621fb8c",
   "pageContractSha256": "31ee98f68ac122da0db2a6fcbbf92a1209b2fe3375a9b08a50e971fa8ebc68ff",
   "limitations": [
     "Documents only, not HTTP/Vue/device tests",

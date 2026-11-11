@@ -1,10 +1,10 @@
 # UniGate 数据与事务设计
 
-版本v0.3；2026-10-21；ADR-042采用API合同，ADR-043采用项目检查，D3按项目依据完成；不声明原版检查全通过。以下为未执行的设计DDL/SQL，不是数据库迁移或业务实现；PostgreSQL18为技术候选，无数据库验证结果。
+版本v0.4；2026-11-11；ADR-047领域重划分：§1聚合归属按8上下文+平台内核更新，表结构与DDL不变（v0.3为2026-10-21 ADR-042采用API合同、ADR-043采用项目检查版本）。以下为未执行的设计DDL/SQL，不是数据库迁移或业务实现；PostgreSQL18为技术候选，无数据库验证结果。
 
 ## 1. 聚合与持久映射
 
-Event→ug_event/policy；RegistrationParty→ug_party及review/credential/admission/correction/source_link；ImportBatch→batch/row；SourceConnection→connection/connection_event/source；DeviceSession→device，身份账号/授权/session/challenge；ExportJob→job/export/delivery；CleanupRun→cleanup/deletion_ledger；operation/audit/outbox为跨过程基础记录。统计只读事实，不独立写人员余额。
+Event→ug_event/policy（EventAdmin）；RegistrationParty→ug_party及review/credential/source_link（Enrollment）；Device（原DeviceSession，Gate）→device，入场事实/更正→admission/correction（核销事务内同更新Party余额）；ImportBatch→batch/row，来源配置→source（Intake）；SourceConnection→connection/connection_event（Connection）；Account→account，授权/会话→event_grant/session（Identity）；ExportJob→export/delivery（Delivery，通知尝试为过程数据）；CleanupRun→cleanup/deletion_ledger（Lifecycle）；平台内核→operation/audit/job队列/challenge/outbox及统计读模型。统计只读事实，不独立写人员余额。
 
 policy JSON严格映射EventPolicyInput（version独立列）；告知文本按收集字段、用途、主办方配置和留存模板生成，noticeVersion为内容+policyVersion摘要。不得给客户端任意JSON透传。源映射/原始行/任务载荷JSON也按API DTO白名单验证。API导出的code+label仅展示，DB保存code。派生progress由netAdmitted与approvedSize算，remainingCount由差值算；Review.approvedSize由对应组读取，Batch行数按行状态统计，不重复存不一致计数。
 

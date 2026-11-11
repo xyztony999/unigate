@@ -1,9 +1,10 @@
 {
   "scope": "Gate1-independent-cross-stage-document-assertions",
-  "timestamp": "2026-10-20T17:15:17.309990+00:00",
+  "timestamp": "2026-11-11T09:33:41.542435+00:00",
   "basis": [
     "ADR-043",
-    "ADR-044"
+    "ADR-044",
+    "ADR-047"
   ],
   "passed": 19,
   "failed": 0,
@@ -21,7 +22,7 @@
     {
       "name": "ba-aa-map",
       "status": "PASS",
-      "evidence": "All 17 BA activities map once into AA; 8 BA capabilities retained"
+      "evidence": "All 17 BA activities map once into AA; 6 BA capabilities retained per ADR-047"
     },
     {
       "name": "aa-fl-api-pages-map",
@@ -36,7 +37,7 @@
     {
       "name": "domain-api-roots",
       "status": "PASS",
-      "evidence": "Seven confirmed aggregate names and five model categories trace to API service design"
+      "evidence": "Eight confirmed aggregate names (ADR-047) and five model categories trace to API service design"
     },
     {
       "name": "api-completeness",
@@ -96,23 +97,23 @@
     {
       "name": "design-index-readiness",
       "status": "PASS",
-      "evidence": "D0-D4 complete; implementation and Gate2 remain todo; final Gate1 status updated after manual decision"
+      "evidence": "D0-D4 complete; later implementation state allowed only with recorded ADR-046 authorization"
     },
     {
-      "name": "design-only-workspace",
+      "name": "phase-authorization",
       "status": "PASS",
-      "evidence": "No backend/frontend application scaffold; no runtime, provider, or device claim"
+      "evidence": "Design-only workspace required before pipeline; ADR-046 explicitly authorizes later implementation"
     }
   ],
   "artifacts": {
-    "profiles/unigate/workspace/00-architecture/business-arch.md": "d222c2f359543277992680211af75314f601e16b4bac3c70ca367dc598ed55a1",
-    "profiles/unigate/workspace/00-architecture/application-arch.md": "f1c2e7ab457814e3090c1482e7f8ccfe684c7557eaffefa720b07aa99d8b4c20",
-    "profiles/unigate/workspace/00-architecture/function-list.md": "81d1cb625699697c4c51ac25f9515b1573917e6e2dd205bfbb6aa452de95e4f2",
+    "profiles/unigate/workspace/00-architecture/business-arch.md": "5409fd5875fd345457ecdffdb4c944246788f46bc785688dd1d64a3e80cf81f1",
+    "profiles/unigate/workspace/00-architecture/application-arch.md": "37a230d4dbfe07aa28534b5ba2c392c8f07c4bf3a565e379be662040a7b2c054",
+    "profiles/unigate/workspace/00-architecture/function-list.md": "8f1e04fc3a220369a3004a7bff6502190dc4d7fcfffcad035ef50f3254a83770",
     "profiles/unigate/workspace/02-detailed/prd/unigate-prd.md": "5d38775840378f4d1d6a5ca538fead1a7fd0dfaf7f8a1e5b013d84d114774607",
-    "profiles/unigate/workspace/02-detailed/prd/unigate-domain-model.md": "330528370a58df48ffe1b9fb4af8068a8887cba33d34d4abf7c50f54b55f658f",
-    "profiles/unigate/workspace/02-detailed/api/api-unigate.md": "0b9ff5e082bc06186c4faba037abab981f649d30b05e85749f053e6db4b7bf98",
-    "profiles/unigate/workspace/02-detailed/api/openapi-unigate.json": "cc185ea09d0f90ad1843e5716e7c5843566767ccce6e367dc4f26e667de6612b",
-    "profiles/unigate/workspace/02-detailed/api/data-model-unigate.md": "517ceac5e628f56c8fc6072a66b8aab85c892561905021a27438af4ae213564c",
+    "profiles/unigate/workspace/02-detailed/prd/unigate-domain-model.md": "9701d874dbcbb409963174c2a2c1685db9f16222265a291c4f0be907321b405a",
+    "profiles/unigate/workspace/02-detailed/api/api-unigate.md": "5063d9dbd821619b9652f0ac0d6290a0fb560815f800bc4c8f948bf8836263df",
+    "profiles/unigate/workspace/02-detailed/api/openapi-unigate.json": "11bbf80bc240a617913ba02135fdb12ec6703f8e0eb623d414397f4d0621fb8c",
+    "profiles/unigate/workspace/02-detailed/api/data-model-unigate.md": "a066fab28fdf064921963e8289fd94023ad38e27c45187c3af1f6924a86934f4",
     "profiles/unigate/workspace/02-detailed/interaction/page-contracts.json": "31ee98f68ac122da0db2a6fcbbf92a1209b2fe3375a9b08a50e971fa8ebc68ff",
     "profiles/unigate/workspace/02-detailed/interaction/README.md": "ca1b919023f016c3d76a0821bc8145915e50cff7f0f8c9269108f80313f1cd5b",
     "profiles/unigate/workspace/02-detailed/interaction/shared/unigate/unigate.md": "f6e3d0319ebdc3476a66320480da110ebdc46803a9d330a71d71961238335844",

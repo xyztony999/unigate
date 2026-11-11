@@ -1,6 +1,6 @@
 # UniGate 在线版 API 设计
 
-版本 v0.3；日期 2026-10-21；状态：ADR-042采用合同，ADR-043采用项目检查；D3已按项目机械/人工检查完成归档，不声称缺失原版全条目通过。设计文档，不是已运行服务。
+版本 v0.4；日期 2026-11-11；状态：ADR-047 领域重划分——85 操作 AA 编号全部重挂 AA v0.5 新编号，路径/DTO/枚举/DDL 零变更；此前 ADR-042采用合同、ADR-043采用项目检查，D3已按项目机械/人工检查完成归档。设计文档，不是已运行服务。
 
 ## 1. 模块设计概述
 
@@ -16,11 +16,11 @@ Java/Spring Boot 后端和 Vue 已确认。详细设计候选为 JDK 21、Spring
 
 ### 1.3 产物和追溯
 
-`openapi-unigate.json` 为字段级合同，本文为跨字段/授权/事务语义，`data-model-unigate.md` 为表/约束/SQL 设计。每个操作保留 AA 子模块 ID；第5节对应全部43项 FL 功能。API 结构变更须同步三份文档和枚举池，禁止靠前端隐藏字段替代后端授权。
+`openapi-unigate.json` 为字段级合同，本文为跨字段/授权/事务语义，`data-model-unigate.md` 为表/约束/SQL 设计。每个操作保留 AA 子模块 ID（ADR-047 重划分后编号指向 AA v0.5，新旧映射见 ../05-reports/domain-redivision-proposal.md §3.2）；第5节对应全部43项 FL 功能。API 结构变更须同步三份文档和枚举池，禁止靠前端隐藏字段替代后端授权。
 
 ### 1.4 对象与服务边界
 
-Event 负责阶段、容量及策略；RegistrationParty 负责资格、批准名额、待增员、票证、核销和更正；ImportBatch 管预览和来源关联；DeviceSession 管活动/模式受限终端；SourceConnection 管平台秘密与获权资源；ExportJob、CleanupRun 管受控文件和实际清理。身份账号/授权为通用实体，统计为派生读模型。关联及表见数据设计第1—3节。
+Event 负责阶段、容量及策略（EventAdmin）；RegistrationParty 负责资格、批准名额、待增员和票证（Enrollment）；Device（原 DeviceSession，ADR-047）与入场事实/更正管活动内受限终端和核销（Gate）；ImportBatch 管预览和来源关联（Intake）；SourceConnection 管平台秘密与获权资源（Connection）；ExportJob、CleanupRun 管受控文件和实际清理（Delivery/Lifecycle）。Account/授权为通用聚合与实体（Identity），统计为平台内核承载的派生读模型。关联及表见数据设计第1—3节。
 
 ## 2. 跨聚合根设计
 
@@ -119,7 +119,7 @@ SourceList.availableConnections仅列该活动被管理员分配的FEISHU/TENCEN
 
 ### 4.1 聚合/实体/服务及过程 I/O
 
-EventService：create/update/policy/transition，读写Event；PartyService：submit/review/change/cancel/increase/walkIn，原子协调Event+Party+Decision；CredentialService：issue/revoke/reissue；GateService：resolve/commit/result/correct；IntakeService：preview/resolve/commit；IdentityService：account/grant/session/device；ConnectionService：allowlist资源与凭据；DeliveryService：邮件与导出；LifecycleService：到期隔离/清理/恢复依据；ReportingService：只读快照。外部I/O通过FeishuAdapter/TencentAdapter/MailAdapter/SmsAdapter/ArtifactStore，数据库Repository不绕过应用服务变更余额。
+按 ADR-047 上下文边界组织（实现为平铺单包，包结构重构属 D-5b）：EventAdmin/EventService：create/update/policy/transition，读写Event；Enrollment/PartyService：submit/review/change/cancel/increase/walkIn/凭证issue/revoke/reissue，原子协调Event+Party+Decision；Gate/GateService：resolve/commit/result/correct/walkIn/increase；Intake/IntakeService：preview/resolve/commit；Identity/IdentityService：account/grant/session；Connection/ConnectionService：allowlist资源与凭据；Delivery/DeliveryService：邮件与导出；Lifecycle/LifecycleService：到期隔离/清理/恢复依据；平台内核：幂等Operation/审计/任务队列/挑战与统计读模型（原独立ReportingService并入）。外部I/O通过FeishuAdapter/TencentAdapter/MailAdapter/SmsAdapter/ArtifactStore，数据库Repository不绕过应用服务变更余额。
 
 子流程 I/O：批准=(event,party,delta,version,actor,operationId)→Decision+新占额或冲突；核销=(event,scanContext,count,version,device,actor,operationId)→GateResult；纠错=(originalRecord,count,partyVersion,reason,operationId)→CorrectionView；导入=(batch,previewVersion,rowSet,operationId)→BatchCommitView；补发=(party,version,rotateAccess,reason,operationId)→ReissueView；清理=(event,dueAt,managedScopes)→CleanupView。涉及的持久字段、DDL和SQL清单见 data-model-unigate.md；内部事件见第5节。
 
@@ -451,7 +451,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.16 EventTransition — 发布与检票窗口流转
 
-`POST /api/v1/event/event/transition`；角色：ORGANIZER；认证：STAFF；AA：2.1.2.1, 2.1.2.2, 2.2.4.1。
+`POST /api/v1/event/event/transition`；角色：ORGANIZER；认证：STAFF；AA：2.1.2.1, 2.1.2.2, 2.2.3.1。
 
 请求位置：application/json body。
 
@@ -589,7 +589,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.23 MyParty — 查看本组状态
 
-`GET /api/v1/public/party/detail`；角色：PARTICIPANT；认证：PARTY；AA：2.2.3.1。
+`GET /api/v1/public/party/detail`；角色：PARTICIPANT；认证：PARTY；AA：2.1.1.3。
 
 请求位置：URL query。
 
@@ -607,7 +607,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.24 MyCredential — 领取本组有效票
 
-`GET /api/v1/public/credential/detail`；角色：PARTICIPANT；认证：PARTY；AA：2.2.3.1。
+`GET /api/v1/public/credential/detail`；角色：PARTICIPANT；认证：PARTY；AA：2.1.1.3。
 
 请求位置：URL query。
 
@@ -724,7 +724,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.30 RecoveryStart — 申请恢复本组入口
 
-`POST /api/v1/public/recovery/start`；角色：PARTICIPANT；认证：ANON；AA：2.2.3.2。
+`POST /api/v1/public/recovery/start`；角色：PARTICIPANT；认证：ANON；AA：2.1.1.4。
 
 请求位置：application/json body。
 
@@ -746,7 +746,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.31 RecoveryVerify — 验证恢复私密能力
 
-`POST /api/v1/public/recovery/verify`；角色：PARTICIPANT；认证：ANON；AA：2.2.3.2。
+`POST /api/v1/public/recovery/verify`；角色：PARTICIPANT；认证：ANON；AA：2.1.1.4。
 
 请求位置：application/json body。
 
@@ -766,7 +766,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.32 PartyList — 报名组列表
 
-`POST /api/v1/enrollment/party/list`；角色：ORGANIZER, READER；认证：STAFF；AA：2.1.1.2, 2.2.4.2。
+`POST /api/v1/enrollment/party/list`；角色：ORGANIZER, READER；认证：STAFF；AA：2.1.1.2, 2.2.3.2。
 
 请求位置：application/json body。
 
@@ -793,7 +793,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.33 PartyDetail — 报名组详情
 
-`GET /api/v1/enrollment/party/detail`；角色：ORGANIZER, READER；认证：STAFF；AA：2.1.1.2, 2.2.4.2。
+`GET /api/v1/enrollment/party/detail`；角色：ORGANIZER, READER；认证：STAFF；AA：2.1.1.2, 2.2.3.2。
 
 请求位置：URL query。
 
@@ -902,7 +902,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.38 CredentialReissue — 负责人核对后补发
 
-`POST /api/v1/enrollment/credential/reissue`；角色：ORGANIZER；认证：STAFF；AA：2.2.3.1, 2.2.3.2。
+`POST /api/v1/enrollment/credential/reissue`；角色：ORGANIZER；认证：STAFF；AA：2.1.1.3, 2.1.1.4。
 
 请求位置：application/json body。
 
@@ -925,7 +925,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.39 CredentialRevoke — 撤销有效票
 
-`POST /api/v1/enrollment/credential/revoke`；角色：ORGANIZER；认证：STAFF；AA：2.2.3.1。
+`POST /api/v1/enrollment/credential/revoke`；角色：ORGANIZER；认证：STAFF；AA：2.1.1.3。
 
 请求位置：application/json body。
 
@@ -1048,7 +1048,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.45 TicketResolve — 识别票并确认剩余名额
 
-`POST /api/v1/gate/ticket/resolve`；角色：ORGANIZER, CHECKER, PARTICIPANT；认证：GATE；AA：2.1.3.1。
+`POST /api/v1/gate/ticket/resolve`；角色：ORGANIZER, CHECKER, PARTICIPANT；认证：GATE；AA：2.1.2.3。
 
 请求位置：application/json body。
 
@@ -1067,7 +1067,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.46 GateCommit — 核销本次人数
 
-`POST /api/v1/gate/checkin/commit`；角色：ORGANIZER, CHECKER, PARTICIPANT；认证：GATE；AA：2.1.3.1, 2.4.3.2。
+`POST /api/v1/gate/checkin/commit`；角色：ORGANIZER, CHECKER, PARTICIPANT；认证：GATE；AA：2.1.2.3, 2.4.3.2。
 
 请求位置：application/json body。
 
@@ -1089,7 +1089,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.47 GateLookup — 工作人员辅助找票
 
-`POST /api/v1/gate/party/lookup`；角色：ORGANIZER, CHECKER；认证：GATE；AA：2.2.3.2。
+`POST /api/v1/gate/party/lookup`；角色：ORGANIZER, CHECKER；认证：GATE；AA：2.1.1.4。
 
 请求位置：application/json body。
 
@@ -1108,7 +1108,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.48 GateOperation — 查询原核销结果
 
-`POST /api/v1/gate/operation/result`；角色：ORGANIZER, CHECKER, PARTICIPANT；认证：GATE；AA：2.4.3.2, 2.1.3.3。
+`POST /api/v1/gate/operation/result`；角色：ORGANIZER, CHECKER, PARTICIPANT；认证：GATE；AA：2.4.3.2, 2.1.2.5。
 
 请求位置：application/json body。
 
@@ -1127,7 +1127,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.49 GateRecords — 核销记录
 
-`POST /api/v1/gate/record/list`；角色：ORGANIZER, CHECKER；认证：STAFF；AA：2.4.3.1。
+`POST /api/v1/gate/record/list`；角色：ORGANIZER, CHECKER；认证：STAFF；AA：2.4.3.3。
 
 请求位置：application/json body。
 
@@ -1149,7 +1149,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.50 GateCorrect — 负责人更正误检
 
-`POST /api/v1/gate/record/correct`；角色：ORGANIZER；认证：STAFF；AA：2.1.3.3。
+`POST /api/v1/gate/record/correct`；角色：ORGANIZER；认证：STAFF；AA：2.1.2.5。
 
 请求位置：application/json body。
 
@@ -1172,7 +1172,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.51 GateWalkIn — 现场补录或处理既有待审
 
-`POST /api/v1/gate/party/walk-in`；角色：ORGANIZER；认证：STAFF；AA：2.1.3.2。
+`POST /api/v1/gate/party/walk-in`；角色：ORGANIZER；认证：STAFF；AA：2.1.2.4。
 
 请求位置：application/json body。
 
@@ -1196,7 +1196,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.52 GateIncrease — 现场负责人增加名额
 
-`POST /api/v1/gate/party/increase`；角色：ORGANIZER；认证：STAFF；AA：2.1.3.2。
+`POST /api/v1/gate/party/increase`；角色：ORGANIZER；认证：STAFF；AA：2.1.2.4。
 
 请求位置：application/json body。
 
@@ -1324,7 +1324,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.58 ResourceList — 获准资源选择器
 
-`POST /api/v1/integration/resource/list`；角色：ADMIN, ORGANIZER；认证：STAFF；AA：2.2.2.2, 2.4.2.2。
+`POST /api/v1/integration/resource/list`；角色：ADMIN, ORGANIZER；认证：STAFF；AA：2.2.2.2, 2.4.3.1。
 
 请求位置：application/json body。
 
@@ -1387,7 +1387,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.61 SourcePull — 拉取形成预览批次
 
-`POST /api/v1/intake/source/pull`；角色：ORGANIZER；认证：STAFF；AA：2.2.2.2, 2.4.2.2。
+`POST /api/v1/intake/source/pull`；角色：ORGANIZER；认证：STAFF；AA：2.2.2.2, 2.4.3.1。
 
 请求位置：application/json body。
 
@@ -1540,7 +1540,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.68 JobList — 任务列表
 
-`POST /api/v1/platform/job/list`；角色：ADMIN, ORGANIZER；认证：STAFF；AA：2.4.2.2。
+`POST /api/v1/platform/job/list`；角色：ADMIN, ORGANIZER；认证：STAFF；AA：2.4.3.1。
 
 请求位置：application/json body。
 
@@ -1561,7 +1561,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.69 JobDetail — 任务详情
 
-`GET /api/v1/platform/job/detail`；角色：ADMIN, ORGANIZER；认证：STAFF；AA：2.4.2.2。
+`GET /api/v1/platform/job/detail`；角色：ADMIN, ORGANIZER；认证：STAFF；AA：2.4.3.1。
 
 请求位置：URL query。
 
@@ -1580,7 +1580,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.70 JobRetry — 重试失败任务
 
-`POST /api/v1/platform/job/retry`；角色：ADMIN, ORGANIZER；认证：STAFF；AA：2.4.2.2。
+`POST /api/v1/platform/job/retry`；角色：ADMIN, ORGANIZER；认证：STAFF；AA：2.4.3.1。
 
 请求位置：application/json body。
 
@@ -1601,7 +1601,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.71 EmailResend — 重试领票邮件
 
-`POST /api/v1/delivery/notification/resend`；角色：ORGANIZER；认证：STAFF；AA：2.2.3.2。
+`POST /api/v1/delivery/notification/resend`；角色：ORGANIZER；认证：STAFF；AA：2.1.1.4。
 
 请求位置：application/json body。
 
@@ -1622,7 +1622,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.72 Statistics — 活动统计
 
-`GET /api/v1/report/attendance/summary`；角色：ORGANIZER, READER；认证：STAFF；AA：2.2.4.2。
+`GET /api/v1/report/attendance/summary`；角色：ORGANIZER, READER；认证：STAFF；AA：2.2.3.2。
 
 请求位置：URL query。
 
@@ -1640,7 +1640,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.73 ExportCreate — 生成受控导出
 
-`POST /api/v1/report/export/create`；角色：ORGANIZER；认证：STAFF；AA：2.2.4.2。
+`POST /api/v1/report/export/create`；角色：ORGANIZER；认证：STAFF；AA：2.2.3.2。
 
 请求位置：application/json body。
 
@@ -1663,7 +1663,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.74 ExportDetail — 导出状态
 
-`GET /api/v1/report/export/detail`；角色：ORGANIZER；认证：STAFF；AA：2.2.4.2。
+`GET /api/v1/report/export/detail`；角色：ORGANIZER；认证：STAFF；AA：2.2.3.2。
 
 请求位置：URL query。
 
@@ -1682,7 +1682,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.75 ExportDownload — 下载未过期文件
 
-`GET /api/v1/report/export/download`；角色：ORGANIZER；认证：STAFF；AA：2.2.4.2。
+`GET /api/v1/report/export/download`；角色：ORGANIZER；认证：STAFF；AA：2.2.3.2。
 
 请求位置：URL query。
 
@@ -1701,7 +1701,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.76 DeliveryList — 明细交付记录
 
-`POST /api/v1/delivery/record/list`；角色：ORGANIZER；认证：STAFF；AA：2.2.5.2。
+`POST /api/v1/delivery/record/list`；角色：ORGANIZER；认证：STAFF；AA：2.2.4.2。
 
 请求位置：application/json body。
 
@@ -1721,7 +1721,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.77 DeliveryRecord — 登记明细交付范围
 
-`POST /api/v1/delivery/record/create`；角色：ORGANIZER；认证：STAFF；AA：2.2.5.2。
+`POST /api/v1/delivery/record/create`；角色：ORGANIZER；认证：STAFF；AA：2.2.4.2。
 
 请求位置：application/json body。
 
@@ -1745,7 +1745,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.78 CleanupDetail — 到期及实际清理状态
 
-`GET /api/v1/lifecycle/cleanup/detail`；角色：ORGANIZER；认证：STAFF；AA：2.2.5.1。
+`GET /api/v1/lifecycle/cleanup/detail`；角色：ORGANIZER；认证：STAFF；AA：2.2.4.1。
 
 请求位置：URL query。
 
@@ -1763,7 +1763,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.79 CleanupRetry — 重试到期失败清理
 
-`POST /api/v1/lifecycle/cleanup/retry`；角色：ORGANIZER；认证：STAFF；AA：2.2.5.1, 2.4.2.2。
+`POST /api/v1/lifecycle/cleanup/retry`；角色：ORGANIZER；认证：STAFF；AA：2.2.4.1, 2.4.3.1。
 
 请求位置：application/json body。
 
@@ -1784,7 +1784,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.80 AuditList — 获准审计记录
 
-`POST /api/v1/platform/audit/list`；角色：ORGANIZER, CHECKER；认证：STAFF；AA：2.4.3.1。
+`POST /api/v1/platform/audit/list`；角色：ORGANIZER, CHECKER；认证：STAFF；AA：2.4.3.3。
 
 请求位置：application/json body。
 
@@ -1839,7 +1839,7 @@ EventService：create/update/policy/transition，读写Event；PartyService：su
 
 #### 4.2.83 ResourceFields — 读取获准来源字段元数据
 
-`POST /api/v1/integration/resource/fields`；角色ADMIN/ORGANIZER；STAFF；AA2.2.2.2/2.4.2.2；安全查询，用于避免资源引用进入URL，须Origin/CSRF。
+`POST /api/v1/integration/resource/fields`；角色ADMIN/ORGANIZER；STAFF；AA2.2.2.2/2.4.3.1；安全查询，用于避免资源引用进入URL，须Origin/CSRF。
 
 | 字段 | 类型/引用 | 必填 | 边界 |
 |---|---|---|---|
@@ -2849,44 +2849,44 @@ HTTP200首次提交成功：
 |---|---|---|
 | FL-A-001 | 2.4.1.1 | SessionBootstrap, Login, Logout, SessionMe, AccountList, AccountCreate, AccountUpdate, PasswordChange, GrantList, GrantSave, GrantRevoke, EventList, PartyExchange |
 | FL-A-002 | 2.4.2.1 | ConnectionList, ConnectionSave, ConnectionAuthorize, ConnectionCallback, ConnectionRevoke |
-| FL-A-003 | 2.4.2.2 | ResourceList, SourcePull, JobList, JobDetail, JobRetry, CleanupRetry |
+| FL-A-003 | 2.4.3.1 | ResourceList, SourcePull, JobList, JobDetail, JobRetry, CleanupRetry |
 | FL-O-001 | 2.1.1.1 | SubmitRegistration, ReviewList, ReviewDecide, BatchCommit |
 | FL-O-002 | 2.1.1.2 | MyPartyChange, MyPartyCancel, PartyList, PartyDetail, PartyChange, PartyCancel |
 | FL-O-003 | 2.1.2.1 | EventTransition |
 | FL-O-004 | 2.1.2.2 | EventTransition |
-| FL-O-005 | 2.1.3.1 | TicketResolve, GateCommit |
-| FL-O-006 | 2.1.3.2 | GateWalkIn, GateIncrease |
-| FL-O-007 | 2.1.3.3 | GateOperation, GateCorrect |
+| FL-O-005 | 2.1.2.3 | TicketResolve, GateCommit |
+| FL-O-006 | 2.1.2.4 | GateWalkIn, GateIncrease |
+| FL-O-007 | 2.1.2.5 | GateOperation, GateCorrect |
 | FL-O-008 | 2.2.1.1 | EventList, EventDetail, EventCreate, EventUpdate, EventOptions |
 | FL-O-009 | 2.2.1.2 | PolicyGet, PolicyUpdate |
 | FL-O-010 | 2.2.2.2 | ResourceList, SourceSave, SourceList, SourcePull, BatchUpload, BatchDetail, BatchPreview, BatchRows, DuplicateResolve, BatchCommit |
 | FL-O-011 | 2.2.2.2 | ResourceList, SourceSave, SourceList, SourcePull, BatchUpload, BatchDetail, BatchPreview, BatchRows, DuplicateResolve, BatchCommit |
-| FL-O-012 | 2.2.3.1 | MyParty, MyCredential, CredentialReissue, CredentialRevoke |
-| FL-O-013 | 2.2.3.2 | RecoveryStart, RecoveryVerify, CredentialReissue, GateLookup, EmailResend |
-| FL-O-014 | 2.2.4.1 | EventTransition |
-| FL-O-015 | 2.2.4.2 | PartyList, PartyDetail, Statistics, ExportCreate, ExportDetail, ExportDownload |
-| FL-O-016 | 2.2.4.2 | PartyList, PartyDetail, Statistics, ExportCreate, ExportDetail, ExportDownload |
-| FL-O-017 | 2.2.5.1 | CleanupDetail, CleanupRetry |
-| FL-O-018 | 2.2.5.2 | DeliveryList, DeliveryRecord |
+| FL-O-012 | 2.1.1.3 | MyParty, MyCredential, CredentialReissue, CredentialRevoke |
+| FL-O-013 | 2.1.1.4 | RecoveryStart, RecoveryVerify, CredentialReissue, GateLookup, EmailResend |
+| FL-O-014 | 2.2.3.1 | EventTransition |
+| FL-O-015 | 2.2.3.2 | PartyList, PartyDetail, Statistics, ExportCreate, ExportDetail, ExportDownload |
+| FL-O-016 | 2.2.3.2 | PartyList, PartyDetail, Statistics, ExportCreate, ExportDetail, ExportDownload |
+| FL-O-017 | 2.2.4.1 | CleanupDetail, CleanupRetry |
+| FL-O-018 | 2.2.4.2 | DeliveryList, DeliveryRecord |
 | FL-O-019 | 2.4.1.1 | SessionBootstrap, Login, Logout, SessionMe, AccountList, AccountCreate, AccountUpdate, PasswordChange, GrantList, GrantSave, GrantRevoke, EventList, PartyExchange |
 | FL-O-020 | 2.4.1.2 | DeviceRegister, DeviceClaim, DeviceDetail, DeviceList, DeviceRevoke |
-| FL-O-021 | 2.4.2.2 | ResourceList, SourcePull, JobList, JobDetail, JobRetry, CleanupRetry |
-| FL-O-022 | 2.4.3.1 | GateRecords, AuditList |
+| FL-O-021 | 2.4.3.1 | ResourceList, SourcePull, JobList, JobDetail, JobRetry, CleanupRetry |
+| FL-O-022 | 2.4.3.3 | GateRecords, AuditList |
 | FL-O-023 | 2.4.3.2 | MyOperation, GateCommit, GateOperation, OperationResult |
-| FL-C-001 | 2.1.3.1 | TicketResolve, GateCommit |
-| FL-C-002 | 2.1.3.3 | GateOperation, GateCorrect |
-| FL-C-003 | 2.2.3.2 | RecoveryStart, RecoveryVerify, CredentialReissue, GateLookup, EmailResend |
+| FL-C-001 | 2.1.2.3 | TicketResolve, GateCommit |
+| FL-C-002 | 2.1.2.5 | GateOperation, GateCorrect |
+| FL-C-003 | 2.1.1.4 | RecoveryStart, RecoveryVerify, CredentialReissue, GateLookup, EmailResend |
 | FL-C-004 | 2.4.1.1 | SessionBootstrap, Login, Logout, SessionMe, AccountList, AccountCreate, AccountUpdate, PasswordChange, GrantList, GrantSave, GrantRevoke, EventList, PartyExchange |
 | FL-C-005 | 2.4.1.2 | DeviceRegister, DeviceClaim, DeviceDetail, DeviceList, DeviceRevoke |
-| FL-C-006 | 2.4.3.1 | GateRecords, AuditList |
+| FL-C-006 | 2.4.3.3 | GateRecords, AuditList |
 | FL-C-007 | 2.4.3.2 | MyOperation, GateCommit, GateOperation, OperationResult |
-| FL-R-001 | 2.2.4.2 | PartyList, PartyDetail, Statistics, ExportCreate, ExportDetail, ExportDownload |
+| FL-R-001 | 2.2.3.2 | PartyList, PartyDetail, Statistics, ExportCreate, ExportDetail, ExportDownload |
 | FL-R-002 | 2.4.1.1 | SessionBootstrap, Login, Logout, MyGrantList, SessionMe, AccountList, AccountCreate, AccountUpdate, PasswordChange, GrantList, GrantSave, GrantRevoke, EventList, PartyExchange |
 | FL-P-001 | 2.1.1.2 | MyPartyChange, MyPartyCancel, PartyList, PartyDetail, PartyChange, PartyCancel |
-| FL-P-002 | 2.1.3.1 | TicketResolve, GateCommit |
+| FL-P-002 | 2.1.2.3 | TicketResolve, GateCommit |
 | FL-P-003 | 2.2.2.1 | PublicEvent, SubmitRegistration, SmsStart, SmsVerify |
-| FL-P-004 | 2.2.3.1 | MyParty, MyCredential, CredentialReissue, CredentialRevoke |
-| FL-P-005 | 2.2.3.2 | RecoveryStart, RecoveryVerify, CredentialReissue, GateLookup, EmailResend |
+| FL-P-004 | 2.1.1.3 | MyParty, MyCredential, CredentialReissue, CredentialRevoke |
+| FL-P-005 | 2.1.1.4 | RecoveryStart, RecoveryVerify, CredentialReissue, GateLookup, EmailResend |
 | FL-P-006 | 2.4.1.1 | SessionBootstrap, Login, Logout, SessionMe, AccountList, AccountCreate, AccountUpdate, PasswordChange, GrantList, GrantSave, GrantRevoke, EventList, PartyExchange |
 | FL-P-007 | 2.4.1.2 | DeviceRegister, DeviceClaim, DeviceDetail, DeviceList, DeviceRevoke |
 | FL-P-008 | 2.4.3.2 | MyOperation, GateCommit, GateOperation, OperationResult |
@@ -2903,3 +2903,4 @@ JSON引用、接口/路由唯一性、请求字段/幂等键、AA/FL追溯和枚
 | v0.2 | 2026-10-21 | 一致性修正 | ADR-042采用接口；补齐MyGrantList、匿名上下文连续性请求头及检票员记录范围，修复既定功能缺口，不增加角色业务权限。 |
 | v0.3 | 2026-10-21 | 交互契约补齐 | ADR-043采用项目检查；补齐来源字段/授权活动元数据、报名原结果读取、清理分范围、终端阶段、核销历史和固定GATE幂等作用域，修复既定功能的展示/重试缺口，不增加名单权限。 |
 | v0.3注记 | 2026-10-21 | 阶段引用 | ADR-044确认D4；验证边界改为指向独立Gate1报告，接口及字段保持0.3.0。 |
+| v0.4 | 2026-11-11 | 领域重划分 | ADR-047：85操作AA编号重挂AA v0.5（§4.2/§5.2及openapi x-aa-submodules），§1.4/§4.1对齐8上下文+平台内核（DeviceSession更名Device）；路径、DTO、枚举、DDL零变更，OpenAPI合同版本仍为0.3.0。 |
