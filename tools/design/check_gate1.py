@@ -41,8 +41,11 @@ def main():
         results.append({'name': name, 'status': 'PASS' if condition else 'FAIL', 'evidence': evidence})
 
     active = json.loads((ROOT / '.claude/settings.json').read_text(encoding='utf-8'))['env']
-    check('active-chain', active['ACTIVE_PROFILE'] == 'unigate' and active['ACTIVE_STACKS'] == 'springboot-vue-web',
-          'Business unigate and Spring Boot/Vue stack explicitly bound; engine-cli integrity evaluated separately')
+    profile_yaml = (ROOT / 'profiles/unigate/profile.yaml').read_text(encoding='utf-8')
+    depends_m = re.search(r'depends:\s*\[([^\]]*)\]', profile_yaml)
+    declared = [s.strip() for s in depends_m.group(1).split(',') if s.strip()] if depends_m else []
+    check('active-chain', active['ACTIVE_PROFILE'] == 'unigate' and active['ACTIVE_STACKS'] in declared,
+          'Business unigate bound to its declared tech stack (profile.yaml depends); engine-cli integrity evaluated separately')
     decisions = (ROOT / 'profiles/unigate/knowledge/design-decisions/index.md').read_text(encoding='utf-8')
     check('confirmation-chain', all(f'## ADR-{n}：' in decisions for n in ['039', '040', '041', '042', '043', '044'])
           and pages['status'] == 'confirmed' and pages['confirmation']['sevenItems'] == list(range(1, 8)),

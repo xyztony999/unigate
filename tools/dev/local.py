@@ -129,11 +129,17 @@ def main():
     elif args.command == 'db-stop':
         subprocess.run([str(pg_tools() / 'pg_ctl.exe'), '-D', str(LOCAL / 'pgdata'), '-m', 'fast', '-w', 'stop'], check=True)
     elif args.command == 'backend':
-        run([shutil.which('mvn') or 'mvn', '-f', 'backend/pom.xml', 'spring-boot:run'], env=environment())
+        # Go single binary; PORT stays at the default 8080 to match the Vite dev proxy.
+        run([shutil.which('go') or 'go', 'run', './cmd/unigate'], cwd=ROOT / 'backend', env=environment())
     elif args.command == 'frontend':
         run([shutil.which('npm') or 'npm', '--prefix', 'frontend', 'run', 'dev'])
     elif args.command == 'verify':
-        run([shutil.which('mvn') or 'mvn', '-f', 'backend/pom.xml', 'verify'], env=environment(test=True))
+        go = shutil.which('go') or 'go'
+        backend = ROOT / 'backend'
+        test_env = environment(test=True)
+        run([go, 'build', './...'], cwd=backend, env=test_env)
+        run([go, 'vet', './...'], cwd=backend, env=test_env)
+        run([go, 'test', './...'], cwd=backend, env=test_env)
         run([shutil.which('npm') or 'npm', '--prefix', 'frontend', 'run', 'build'])
         run([shutil.which('npm') or 'npm', '--prefix', 'frontend', 'test'])
 

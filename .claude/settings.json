@@ -1,6 +1,8 @@
 {
   "env": {
     "ACTIVE_PROFILE": "unigate",
-    "ACTIVE_STACKS": "springboot-vue-web"
+    "ACTIVE_STACKS": "go-vue3",
+    "BACKEND_ROOT": "backend",
+    "FRONTEND_ROOT": "frontend"
   }
 }

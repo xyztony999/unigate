@@ -2,37 +2,43 @@
   "apiVersion": 1,
   "active": "unigate",
   "stacks": [
-    "springboot-vue-web"
+    "go-vue3"
   ],
   "mounts": [
     {
-      "layer": "springboot-vue-web",
-      "src": "profiles/springboot-vue-web/skills/web-stack-specs",
-      "dst": ".claude/skills/web-stack-specs",
+      "layer": "go-vue3",
+      "src": "profiles/go-vue3/skills/stack-specs",
+      "dst": ".claude/skills/stack-specs",
       "mode": "copy"
     },
     {
-      "layer": "springboot-vue-web",
-      "src": "profiles/springboot-vue-web/agents/springboot-web-orchestrator.md",
-      "dst": ".claude/agents/springboot-web-orchestrator.md",
+      "layer": "go-vue3",
+      "src": "profiles/go-vue3/agents/backend-orchestrator.md",
+      "dst": ".claude/agents/backend-orchestrator.md",
       "mode": "copy"
     },
     {
-      "layer": "springboot-vue-web",
-      "src": "profiles/springboot-vue-web/agents/vue-web-orchestrator.md",
-      "dst": ".claude/agents/vue-web-orchestrator.md",
+      "layer": "go-vue3",
+      "src": "profiles/go-vue3/agents/frontend-orchestrator.md",
+      "dst": ".claude/agents/frontend-orchestrator.md",
       "mode": "copy"
     },
     {
-      "layer": "springboot-vue-web",
-      "src": "profiles/springboot-vue-web/rules/web-stack-rules.md",
-      "dst": ".claude/rules/web-stack-rules.md",
+      "layer": "go-vue3",
+      "src": "profiles/go-vue3/rules/backend-rules.md",
+      "dst": ".claude/rules/backend-rules.md",
+      "mode": "copy"
+    },
+    {
+      "layer": "go-vue3",
+      "src": "profiles/go-vue3/rules/frontend-rules.md",
+      "dst": ".claude/rules/frontend-rules.md",
       "mode": "copy"
     }
   ],
   "claudemd_imports": [
     "@profiles/unigate/CLAUDE.md"
   ],
-  "created_with": "engine-cli 0.4.0",
-  "ts": "2026-10-20T10:40:35.242Z"
+  "created_with": "engine-cli 1.0.4",
+  "ts": "2026-11-24T08:21:49.245Z"
 }

@@ -4,7 +4,7 @@ profile:
   type: business
   title: UniGate 活动报名与入场管理
   language: zh-CN
-  depends: [springboot-vue-web]
+  depends: [go-vue3]
 knowledge:
   inject: CLAUDE.md
   sections:

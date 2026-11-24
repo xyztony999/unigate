@@ -25,3 +25,7 @@
 - function-list.md v1.1：43项功能全部重挂AA v0.5新编号，条目ID/菜单名/功能点描述与角色覆盖不变。
 - 领域模型 v2.0：7上下文→8上下文+平台内核（ActivityAdmission拆为EventAdmin/Enrollment/Gate、Reporting解散、Identity/Connection拆分），聚合根7→8（DeviceSession更名Device迁Gate、新增Account）。
 - API api-unigate.md v0.4/data-model-unigate.md v0.4/openapi 0.3.0：85操作AA编号（§4.2/§5.2/x-aa-submodules）全部重挂；URL路径、DTO、枚举池（29组）、DDL（25表）零变更。代码未动，Gate 2结论不受影响；Gate 1待按新基线重跑，后端包结构重构（D-5b）及R1—R3边界修复待排期。
+
+## 2026-11-24
+
+- ADR-048 后端全量重写为 Go（go-vue3：gin/slog/pgx，单二进制 cmd/unigate + internal/，替换 backend/），动机为 2核2G/3Mbps 服务器 JVM 内存占用；建立在 ADR-047 重划分基线（BA/AA v0.5、FL v1.1、领域模型 v2.0、API v0.4）之上。PostgreSQL 18（pgx）与 Vue 3 前端不变，25表DDL语义不变。85操作 wire 契约（路径/DTO/枚举/DDL）与重划分基线逐结构一致（仅 x-aa-submodules 域标签/描述差异），33页PageSpec不变，前端零改动；go-vue3 通用API规约让位于既有契约。Go 实现+测试（142测试/41集成，-race净，service覆盖69.9%，修复5个真实bug）+部署/dev工具适配（CI setup-go、Linux交叉编译、systemd/reset/nginx PORT=8090、文档去JRE）已完成，Java Maven结构移除（git可恢复）；Gate2重判WARN放行。更新 knowledge/architecture-choices 技术与集成节、design-decisions ADR-048、api-unigate.md 技术候选与 section-6、INDEX；详见 05-reports/gate2-unigate-2026-11-24.md 与 delivery-unigate-go-2026-11-24.md。

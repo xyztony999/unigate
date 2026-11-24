@@ -22,7 +22,7 @@ D3合同由ADR-042采用，ADR-043采用项目检查；v0.3共85操作、25表�
 
 ## 技术与集成
 
-Java/Spring Boot 后端及 Vue Web 已确认，项目内 springboot-vue-web 提供契约规约。D3提出JDK21、Spring Boot4.1.1、Vue3、PostgreSQL18为详细设计候选，尚未锁定依赖或执行SQL；不自动引入微服务、MQ或专用页面引擎。
+后端按 ADR-048 由 Java/Spring Boot 全量重写为 Go（go-vue3 栈：Go 1.22+ / gin / log-slog / pgx，单二进制 cmd/unigate + internal/，替换 backend/，旧 Java 留 git 历史）；动机为用户服务器 2核2G/3Mbps，JVM 内存占用过大，用户时间充足。Vue 3 Web 前端与面板管理的 PostgreSQL 18 保持不变：FOR UPDATE / SKIP LOCKED / pg_advisory_xact_lock / jsonb / timestamptz / uuid / ON CONFLICT 原样保留，不做数据库方言移植，25 表 DDL 语义不变。85 操作 openapi-unigate.json 契约与 33 页 PageSpec 冻结，前端零改动；go-vue3 通用 API 规约（全 HTTP200 包络、records/pageNum 分页、数字错误码）让位于既有契约，详见 ADR-048 与 api-unigate.md §1.2。不自动引入微服务、MQ或专用页面引擎。CI/deploy/systemd/reset 脚本改 Go 二进制属后续后端/交付阶段，不在本次设计范围。
 
 CSV/XLSX、飞书问卷和腾讯文档进入统一映射/校验/来源流程。个人测试、组织接入预留保持，开发者与实际文档权限待验证。连接凭据和任务执行在平台基础能力管理，业务是否生效由名额/资格服务判断。
 

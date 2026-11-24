@@ -1,0 +1,143 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  # 与 ci.yml 的 backend 作业保持一致: 部署自带完整验证, 不依赖同次 push 的 CI 结论
+  backend:
+    name: Backend build & verify
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18.6-alpine
+        env:
+          POSTGRES_DB: unigate_test
+          POSTGRES_USER: unigate
+          POSTGRES_PASSWORD: unigate_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U unigate -d unigate_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      UNIGATE_TEST_DB_URL: postgres://localhost:5432/unigate_test
+      UNIGATE_TEST_DB_USER: unigate
+      UNIGATE_TEST_DB_PASSWORD: unigate_test
+    steps:
+      - uses: actions/checkout@v4
+      # Go 版本以 backend/go.mod 的 go 指令为准; setup-go 默认缓存 go mod 下载
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: backend/go.mod
+          cache-dependency-path: backend/go.sum
+      - name: Go gate (build + vet + unit/PostgreSQL integration tests)
+        working-directory: backend
+        run: go build ./... && go vet ./... && go test ./...
+      # 生产服务器为 Linux x86_64: 静态交叉编译单二进制, 服务器无需任何运行时
+      - name: Cross-compile Linux binary
+        working-directory: backend
+        env:
+          CGO_ENABLED: '0'
+          GOOS: linux
+          GOARCH: amd64
+        run: go build -trimpath -o unigate ./cmd/unigate
+      - name: Stage payload
+        run: |
+          mkdir -p payload
+          cp backend/unigate payload/unigate
+          chmod 755 payload/unigate
+      - uses: actions/upload-artifact@v4
+        with:
+          name: backend-payload
+          path: payload/
+          if-no-files-found: error
+          retention-days: 7
+
+  frontend:
+    name: Frontend build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm --prefix frontend ci
+      - run: npm --prefix frontend test
+      - run: npm --prefix frontend run build
+      - name: Stage payload
+        run: tar -czf frontend-dist.tar.gz -C frontend/dist .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: frontend-payload
+          path: frontend-dist.tar.gz
+          if-no-files-found: error
+          retention-days: 7
+
+  deploy:
+    name: Deploy to production
+    needs: [backend, frontend]
+    if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    # 在 Settings → Environments → production 上可配置人工审批与分支限制
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: backend-payload
+          path: payload/
+      - uses: actions/download-artifact@v4
+        with:
+          name: frontend-payload
+          path: payload/
+      - name: Assemble payload
+        run: cp deploy/deploy.sh deploy/docker-compose.yml deploy/unigate.service deploy/reset-admin.sh payload/
+      - name: Configure SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SSH_PORT || '22' }}
+        run: |
+          set -euo pipefail
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          if [ -n "$SSH_KNOWN_HOSTS" ]; then
+            printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          else
+            ssh-keyscan -p "$SSH_PORT" "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          fi
+      - name: Upload and deploy
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SSH_PORT || '22' }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          RELEASE: ${{ github.sha }}
+          WEB_ROOT: ${{ vars.WEB_ROOT || '/www/wwwroot/unigate' }}
+          # 生产服务器 8080 已被占用, 默认 8090; 须与 unigate.env 的 PORT、nginx proxy_pass 一致
+          APP_PORT: ${{ vars.APP_PORT || '8090' }}
+          BASE_DIR: /opt/unigate
+        run: |
+          set -euo pipefail
+          tar -czf payload.tgz -C payload .
+          scp -P "$SSH_PORT" payload.tgz "$SSH_USER@$SSH_HOST:/tmp/unigate-payload-$RELEASE.tgz"
+          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "set -e; \
+            mkdir -p '$BASE_DIR/releases/$RELEASE'; \
+            tar -xzf /tmp/unigate-payload-$RELEASE.tgz -C '$BASE_DIR/releases/$RELEASE'; \
+            rm -f /tmp/unigate-payload-$RELEASE.tgz; \
+            APP_PORT='$APP_PORT' bash '$BASE_DIR/releases/$RELEASE/deploy.sh' '$WEB_ROOT'"

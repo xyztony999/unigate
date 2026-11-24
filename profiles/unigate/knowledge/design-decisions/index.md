@@ -419,6 +419,17 @@
 - 级联：85 操作 AA 编号（api-unigate.md §4.2/§5.2 与 openapi x-aa-submodules）和 43 项 FL 功能全部重挂到新编号；URL 路径、DTO、枚举池、DDL 零变更。
 - 边界：本轮仅文档深度（D-5a），后端包结构重构（D-5b）与 R1—R3 边界修复（检票扩容迁包、统计读模型归位、恢复流程走凭证契约等）另行排期；代码未动，Gate 2 结论不受影响。Gate 1 既有锚点（8/17/23/43 数量、7 聚合根、19 份产物 SHA256）随本次失效，需按新基线重跑；05-reports 历史报告为时点记录不改写。
 
+## ADR-048：后端全量重写为 Go，既有 wire 契约冻结优先于栈通用规约
+
+- 日期：2026-11-24；来源：用户技术栈迁移需求，主会话 D0 澄清确认（增量模式）。建立在 ADR-047 重划分基线（API v0.4，仅重挂 x-aa-submodules 域标签，URL/DTO/枚举/DDL 零变更）之上。
+- 动机：用户服务器 2核2G/3Mbps，JVM 内存占用过大；Go 单二进制省内存（约 50MB，无 JVM），用户明确表示时间充足，接受全量重写。
+- 决策：后端 Java/Spring Boot 全量重写为 Go，激活 go-vue3 栈（gin / log-slog / 单二进制）；代码替换 backend/（Go module：cmd/unigate + internal/，BACKEND_ROOT=backend），旧 Java 代码留 git 历史（14d226a 可恢复）。
+- 数据库：保留面板管理的 PostgreSQL 18，Go 用 pgx 驱动；FOR UPDATE / SKIP LOCKED / pg_advisory_xact_lock / jsonb / timestamptz / uuid / ON CONFLICT 等特性原样保留，不做数据库方言移植；25 表 DDL 语义与事务/锁/幂等设计不变。
+- 契约冻结：85 操作 wire 契约（路径/方法/DTO/枚举/DDL，与 ADR-047 重划分后逐结构一致）与 33 页 PageSpec 保持不变，前端零改动；业务架构 BA、应用架构 AA 业务模块/角色/调用、领域模型、PRD 业务规则沿用 ADR-047 基线。
+- 契约权威（关键约束）：go-vue3 的 backend-02-api-conventions.md 为绿场默认风格——全 HTTP200 的 {code,msg,data} 包络、records/pageNum 分页、4xxxx/5xxxx 数字错误码。与既有契约冲突时，以 openapi-unigate.json 为唯一权威，Go 后端必须实现既有契约，不得改成栈通用风格：真实 HTTP 状态码（200/202/400/401/403/404/409/410/422/429/500/503）、{code,message,data,requestId} 包络（成功 code="OK"，错误为字符串码如 VERSION_CONFLICT/CSRF_INVALID/UNAUTHENTICATED）、列表 items、分页 page/pageSize（响应含 items/total/page/pageSize）。go-vue3 本次仅提供 Go 分层编排（api→service→store）、backend-rules.md 的 CRITICAL 安全规则与 go build/vet 构建门禁；其默认 sqlite/MySQL 驱动约定同样让位于 pgx/PostgreSQL。
+- 取代范围：替代 ADR-028 的后端 Java/Spring Boot 选择（前端 Vue 不变）；ADR-046 的 Java 本地实现与 Gate2 证据作为历史记录保留，不删除。
+- 边界：不新增业务功能、不扩大权限。设计增量 + Go 全量实现 + 部署/dev 工具适配已完成（见下方 ADR-048 执行结果）；浏览器/真机/现场容量/备份恢复属部署验收边界。
+
 ## 当前工作
 
 D0—D4设计阶段完成，Gate1已独立执行并判定PASS（2026-10-21）。ADR-044选择1采用七项交互及默认流程，33页PageSpec v1.0归档；API0.3.0共85操作。D3机械37/37、D4机械26/26（2253字段绑定）、跨阶段机械19/19及人工核对通过。原版缺失记录保留，按ADR-043项目依据验收。代码与Gate2仍todo，未做HTTP/DB/设备/平台授权或性能实测。门控依据见workspace/05-reports/gate1-unigate-2026-10-21.md。
@@ -432,3 +443,5 @@ ADR-046执行结果（2026-10-21）：本地前后端实现、构建及适用验
 ADR-047执行结果（2026-11-11）：领域重划分文档深度级联完成——BA v0.5（4/6/17）、AA v0.5（6业务+3平台、23叶）、FL v1.1（43项重挂）、领域模型 v2.0（8上下文+平台内核、8聚合根）、API v0.4（85操作AA编号重挂，路径/DTO/枚举/DDL零变更）。代码包结构重构（D-5b）与R1—R3修复待排期；Gate1待按新基线重跑，Gate2不受影响。
 
 Gate1重跑结果（2026-11-11）：按新基线独立重跑PASS，见workspace/05-reports/gate1-unigate-2026-11-11.md（取代2026-10-21版）。机械D3 37/37、D4 26/26（2253绑定）、跨阶段19/19全部重跑通过；check_gate1.py两处基线锚点随ADR-047同步（BA L3=6、8聚合根）并在报告披露。Gate2结论维持（代码未动），D-5b重构后按新基线复查。
+
+ADR-048执行结果（2026-11-24）：后端 Go 全量重写交付——backend/ 为纯 Go（cmd/unigate + internal/，内嵌 25 表迁移），Java Maven 结构移除（git 14d226a 可恢复）。142 测试/41 集成全过、-race（-timeout 30m）净、service 覆盖 69.9%（Java 基线 87.59%，剩余防御分支记边界）；测试驱动修复 5 个真实 bug（tx set_config / Require typed-nil / RawJSON 嵌套 base64 / cleanup scope 顺序 / gateRecords actor_id）。wire 契约与 ADR-047 重划分基线逐结构一致（仅 x-aa-submodules 域标签/描述差异），Go 内嵌契约与前端 generated 已同步重划分基线。部署/dev 工具适配 Go 单二进制（CI setup-go、Linux 交叉编译、systemd/reset/nginx PORT=8090、文档去 JRE、local.py go run/test）。Gate2 重判 WARN 放行（0 CRITICAL），见 05-reports/gate2-unigate-2026-11-24.md 与 delivery-unigate-go-2026-11-24.md。浏览器/真机/现场容量/备份恢复属部署验收边界。上文 Java 交付证据为历史记录。

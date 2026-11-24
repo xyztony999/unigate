@@ -2,7 +2,7 @@
 
 ## Profile 绑定
 
-当前激活：**unigate**（business，depends: springboot-vue-web）
+当前激活：**unigate**（business，depends: go-vue3）
 
 @profiles/unigate/CLAUDE.md
 

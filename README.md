@@ -8,13 +8,13 @@
 
 ## 项目简介
 
-面向大学新生与家长见面会的报名、同行组检票和统计系统。Java 21 / Spring Boot 3.5.16 / PostgreSQL 18.6，Vue 3 / TypeScript。首版在线运行，支持内置 H5 报名及独立名单检票；手机检票台与横屏平板 kiosk 共用服务端核销。
+面向大学新生与家长见面会的报名、同行组检票和统计系统。Go 单二进制（gin / pgx，ADR-047 由 Java 重写）/ PostgreSQL 18.6，Vue 3 / TypeScript。首版在线运行，支持内置 H5 报名及独立名单检票；手机检票台与横屏平板 kiosk 共用服务端核销。
 
 当前本地代码交付 Gate 2 已通过：后端 47 项、前端 42 项测试，16 项跨栈检查和 8 组真实浏览器检查通过；包括 18 管理页面、CSV 导入及丢失响应后的原操作恢复。真实平台账号、安卓硬件和公网部署按下文边界另验。
 
 ## 本地启动
 
-需要 Java 21、Maven、Node.js 22.12+、Python 3.12+。下面命令在项目根执行。本项目已在 Windows、Java 21.0.6、Maven 3.9.16、Node 22.23.3 上验证。
+需要 Go（版本以 `backend/go.mod` 的 `go` 指令为准）、Node.js 22.12+、Python 3.12+。下面命令在项目根执行。前端已在 Windows、Node 22.23.3 上验证；后端为 Go 单二进制，无需 Java/Maven。
 
 ```powershell
 npm --prefix frontend ci
@@ -54,7 +54,7 @@ python tools/dev/local.py verify
 python -X utf8 tools/verify/check_implementation.py
 ```
 
-开发助手给 Maven 显式传入专用测试数据库配置，运行真实 PostgreSQL 集成测试，再执行前端类型检查、构建与组件测试。直接运行 Maven 而未提供 `UNIGATE_TEST_DB_*` 会跳过数据库测试，不能算完整验收。测试使用独立 schema，不清空开发库。
+开发助手在 `backend/` 下依次执行 `go build ./...`、`go vet ./...`、`go test ./...`，并显式传入专用测试数据库配置运行真实 PostgreSQL 集成测试，再执行前端类型检查、构建与组件测试。直接运行 `go test` 而未提供 `UNIGATE_TEST_DB_*` 会跳过数据库测试，不能算完整验收。测试使用独立 schema，不清空开发库。
 
 真实浏览器脚本 `tools/verify/browser-smoke.mjs` 使用 Edge、运行中的前后端与开发库，创建隔离测试活动并验证报名、组票、横屏 kiosk、分批入场和提交后丢失响应的恢复。它会在首次改密成功后保存本地验收密码，不发送外部通知。运行前安装独立测试依赖：
 
@@ -63,11 +63,11 @@ npm --prefix .local/browser install --save-exact --no-audit --no-fund @playwrigh
 node tools/verify/browser-smoke.mjs
 ```
 
-验证结果见 [Gate 2 报告](profiles/unigate/workspace/05-reports/gate2-unigate-2026-10-21.md)。后端覆盖率在 `backend/target/site/jacoco/`；本地浏览器结果和截图在 `.local/`，不含共享交付材料。
+验证结果见 [Gate 2 报告](profiles/unigate/workspace/05-reports/gate2-unigate-2026-10-21.md)。后端覆盖率可在 `backend/` 下用 `go test -cover ./...` 生成（原 `backend/target/site/jacoco/` 为 Java 遗留）；本地浏览器结果和截图在 `.local/`，不含共享交付材料。
 
 ## 部署与现场使用
 
-生产前端由 `npm --prefix frontend run build` 输出到 `frontend/dist`；后端由 Maven 输出可执行 jar。使用同源 HTTPS，静态服务器设置 SPA fallback，并将 `/api` 代理到后端；`UNIGATE_ALLOWED_ORIGIN` 与实际地址一致，生产保留默认 Secure Cookie。本地助手关闭 Secure 仅用于本机 HTTP。
+生产前端由 `npm --prefix frontend run build` 输出到 `frontend/dist`；后端由 `CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o unigate ./cmd/unigate` 交叉编译为 Linux 静态单二进制，服务器无需 Java 等任何运行时（常驻内存约 50MB，2核2G 即可）。使用同源 HTTPS，静态服务器设置 SPA fallback，并将 `/api` 代理到后端（生产端口 8090，与 `unigate.env` 的 `PORT` 一致）；`UNIGATE_ALLOWED_ORIGIN` 与实际地址一致，生产保留默认 Secure Cookie。本地助手关闭 Secure 仅用于本机 HTTP。GitHub Actions 自动化部署（阿里云 ECS · 宝塔面板）的流水线与一次性初始化步骤见 [部署指南](docs/deployment.md)。
 
 保持主密钥稳定，独立保护活动密钥目录及删除墓碑，**恢复旧数据库时不能回滚该目录**。受管文件存于非公开目录。备份覆盖尚需部署方提供证据，清理报告会明确保留未验证状态，不将数据库删除冒充所有副本删除。配置细节见 [后端说明](backend/README.md) 和 [前端说明](frontend/README.md)。
 

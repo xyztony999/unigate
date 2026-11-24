@@ -1,0 +1,22 @@
+[Unit]
+Description=UniGate backend (Go single binary)
+Documentation=https://github.com/xyztony999/unigate
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=unigate
+Group=unigate
+WorkingDirectory=/opt/unigate
+EnvironmentFile=/opt/unigate/unigate.env
+ExecStart=/opt/unigate/current/unigate
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

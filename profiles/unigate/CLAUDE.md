@@ -1,6 +1,6 @@
 # UniGate 当前业务上下文
 
-最新运行范围ADR-039：首版在线、离线后置；最新确认ADR-044：采用七项页面与交互。D0—D4完成，Gate1按ADR-043项目依据独立检查PASS。历史design阶段已结束；当前ADR-046明确授权pipeline实现及本地验证。
+最新运行范围ADR-039：首版在线、离线后置；最新确认ADR-044：采用七项页面与交互。D0—D4完成，Gate1按ADR-043项目依据独立检查PASS。历史design阶段已结束；当前ADR-046明确授权pipeline实现及本地验证。最新技术决策ADR-048（2026-11-24）：后端迁移Go，契约冻结，见文末增量节。
 
 ## 产品及运行范围
 
@@ -30,7 +30,7 @@
 
 个人明细保留按活动配置，默认活动结束后 30 天，覆盖服务端、暂存、生成导出及端上必要副本，备份恢复防复活；已下载外部副本另约定。在线版浏览器不预存完整名单，最小待确认操作数据按生命周期清理。
 
-后端 Java/Spring Boot，Web 前端 Vue，绑定 springboot-vue-web Profile。确切版本、数据库及部署细节在详细设计选定；不默认微服务、消息队列或专用页面引擎。原生 Android 技术选择已不属首版必要问题。
+后端按 ADR-048 由 Java/Spring Boot 全量重写为 Go，Web 前端 Vue 3 不变，绑定 go-vue3 Profile（Go 1.22+/gin/log-slog/pgx，单二进制 cmd/unigate + internal/，替换 backend/）；保留面板管理的 PostgreSQL 18，不做方言移植。85操作契约与33页PageSpec冻结，前端零改动；go-vue3 通用API规约让位于既有 openapi-unigate.json 契约。不默认微服务、消息队列或专用页面引擎。原生 Android 技术选择已不属首版必要问题。
 
 ## 当前工作流
 
@@ -67,3 +67,7 @@ kiosk方向偏好（2026-10-21）：用户明确要求kiosk也采用横屏。静
 Java21/SpringBoot3.5.16/Flyway11.20.3/PostgreSQL18.6与Vue3工程已实现，85操作/33页面/25表。后端clean verify 47测试无跳过、前端42测试及类型检查/构建通过；Service行覆盖87.59%、Controller78.48%、全部Vue语句64.65%。最终Edge真实服务8组含18管理页与CSV导入全流程通过，16项跨栈证据通过；Gate2按本地代码交付PASS，报告workspace/05-reports/gate2-unigate-2026-10-21.md。19份Gate1设计快照未改。
 
 根README提供可复现启动、账号位置及集成边界。真实飞书/腾讯个人/组织权限、真实邮件短信、安卓硬件与系统kiosk、容量压测及部署备份另验，不伪报已接通或已上线。当前本地验收密码在忽略的.local/runtime.json的e2eAdminPassword，重启不重置；不能把秘密写入知识库。后续变更重跑受影响验证，历史“无代码/仍todo”仅为当时阶段记录。
+
+## 技术栈迁移设计增量（ADR-048，2026-11-24）
+
+用户服务器 2核2G/3Mbps，JVM 内存占用过大，时间充足，决定后端 Java/Spring Boot 全量重写为 Go（go-vue3：Go 1.22+/gin/log-slog/pgx，单二进制 cmd/unigate + internal/，替换 backend/，旧 Java 留 git 历史）。保留面板管理的 PostgreSQL 18，FOR UPDATE/SKIP LOCKED/pg_advisory_xact_lock/jsonb/timestamptz/uuid/ON CONFLICT 原样保留，不做方言移植，25表DDL语义不变。85操作 openapi-unigate.json 契约字节级冻结、33页PageSpec不变，前端零改动。go-vue3 通用API规约（全HTTP200包络/records分页/数字错误码）让位于既有契约：真实HTTP状态码、{code,message,data,requestId}包络、items列表、page/pageSize分页、字符串错误码。本次仅 D1/D3 设计增量（architecture-choices 技术与集成、ADR-048、api-unigate.md §1.2/§3.2/section-6、INDEX note）；BA/AA/FL 业务内容、领域模型、PRD 规则冻结。Go 重写实现、构建验证及 CI/deploy/systemd/reset 脚本适配属后续后端/交付阶段，届时重跑受影响 Gate2；上文 Java 交付为历史记录。

@@ -1,0 +1,241 @@
+{
+  "_generated": {
+    "version": 3,
+    "note": "本文件由 engine-gui 文档中心根据项目架构自动生成，可手工编辑（编辑后原样生效）；删除本文件后下次访问将按最新架构重新生成。",
+    "generatedAt": "2026-11-12T13:08:50.255Z",
+    "generator": "engine-gui doc-center 生成器（/dc/api/domains · /api/projects/:id/funcview）"
+  },
+  "names-map": {},
+  "module-docs": {
+    "domains": {
+      "筹备": {
+        "name": "筹备",
+        "layer": "业务域",
+        "related": "",
+        "fishbone": {
+          "spine": [
+            {
+              "code": "S1",
+              "name": "筹备",
+              "desc": ""
+            }
+          ],
+          "upperRibs": [
+            {
+              "code": "U1-1",
+              "name": "活动规则设定",
+              "desc": "",
+              "col": 0
+            }
+          ],
+          "lowerRibs": []
+        }
+      },
+      "报名与名单准备": {
+        "name": "报名与名单准备",
+        "layer": "业务域",
+        "related": "",
+        "fishbone": {
+          "spine": [
+            {
+              "code": "S2",
+              "name": "报名与名单准备",
+              "desc": ""
+            }
+          ],
+          "upperRibs": [
+            {
+              "code": "U2-1",
+              "name": "报名及名单接收",
+              "desc": "",
+              "col": 0
+            },
+            {
+              "code": "U2-2",
+              "name": "资格与名额管理",
+              "desc": "",
+              "col": 0
+            },
+            {
+              "code": "U2-3",
+              "name": "凭证交付",
+              "desc": "",
+              "col": 0
+            }
+          ],
+          "lowerRibs": []
+        }
+      },
+      "现场入场": {
+        "name": "现场入场",
+        "layer": "业务域",
+        "related": "",
+        "fishbone": {
+          "spine": [
+            {
+              "code": "S3",
+              "name": "现场入场",
+              "desc": ""
+            }
+          ],
+          "upperRibs": [
+            {
+              "code": "U3-1",
+              "name": "现场准备与控制",
+              "desc": "",
+              "col": 0
+            },
+            {
+              "code": "U3-2",
+              "name": "入场核销与异常处置",
+              "desc": "",
+              "col": 0
+            }
+          ],
+          "lowerRibs": []
+        }
+      },
+      "收尾与留存": {
+        "name": "收尾与留存",
+        "layer": "业务域",
+        "related": "",
+        "fishbone": {
+          "spine": [
+            {
+              "code": "S4",
+              "name": "收尾与留存",
+              "desc": ""
+            }
+          ],
+          "upperRibs": [
+            {
+              "code": "U4-1",
+              "name": "结果统计与交付",
+              "desc": "",
+              "col": 0
+            },
+            {
+              "code": "U4-2",
+              "name": "留存与清理",
+              "desc": "",
+              "col": 0
+            }
+          ],
+          "lowerRibs": []
+        }
+      },
+      "聚合与库表": {
+        "name": "聚合与库表",
+        "layer": "业务域",
+        "related": "",
+        "fishbone": {
+          "spine": [
+            {
+              "code": "ug_event",
+              "name": "Event",
+              "desc": ""
+            },
+            {
+              "code": "credential",
+              "name": "RegistrationParty",
+              "desc": ""
+            },
+            {
+              "code": "batch",
+              "name": "ImportBatch",
+              "desc": ""
+            },
+            {
+              "code": "connection",
+              "name": "SourceConnection",
+              "desc": ""
+            },
+            {
+              "code": "device",
+              "name": "DeviceSession",
+              "desc": ""
+            },
+            {
+              "code": "job",
+              "name": "ExportJob",
+              "desc": ""
+            },
+            {
+              "code": "cleanup",
+              "name": "CleanupRun",
+              "desc": ""
+            }
+          ],
+          "upperRibs": [],
+          "lowerRibs": []
+        }
+      }
+    },
+    "domainDetails": {
+      "聚合与库表": {
+        "description": "数据模型聚合根（设计文档未含业务域清单）",
+        "tablePrefix": "",
+        "tableCount": 43,
+        "aggregateRoot": "Event",
+        "objects": [
+          {
+            "name": "Event",
+            "table": "ug_event",
+            "type": "aggregate",
+            "relation": "",
+            "parent": null,
+            "condition": ""
+          },
+          {
+            "name": "RegistrationParty",
+            "table": "credential",
+            "type": "aggregate",
+            "relation": "",
+            "parent": null,
+            "condition": ""
+          },
+          {
+            "name": "ImportBatch",
+            "table": "batch",
+            "type": "aggregate",
+            "relation": "",
+            "parent": null,
+            "condition": ""
+          },
+          {
+            "name": "SourceConnection",
+            "table": "connection",
+            "type": "aggregate",
+            "relation": "",
+            "parent": null,
+            "condition": ""
+          },
+          {
+            "name": "DeviceSession",
+            "table": "device",
+            "type": "aggregate",
+            "relation": "",
+            "parent": null,
+            "condition": ""
+          },
+          {
+            "name": "ExportJob",
+            "table": "job",
+            "type": "aggregate",
+            "relation": "",
+            "parent": null,
+            "condition": ""
+          },
+          {
+            "name": "CleanupRun",
+            "table": "cleanup",
+            "type": "aggregate",
+            "relation": "",
+            "parent": null,
+            "condition": ""
+          }
+        ]
+      }
+    }
+  }
+}

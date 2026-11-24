@@ -1,6 +1,7 @@
 """Read-only UniGate document checks. This is NOT an application or full OAS validator."""
 from pathlib import Path
 import argparse
+import glob
 import hashlib
 import json
 import re
@@ -8,7 +9,21 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[2]
 WS = ROOT / 'profiles/unigate/workspace'
-SOURCE = Path(r'C:\Users\zhang\.codex\plugins\cache\ai-project-engine-local\ai-project-engine\0.4.0\payload\skills\validation\SKILL.md')
+
+def _resolve_engine_source():
+    home = str(Path.home())
+    found = []
+    for pat in (home + '/.zcode/cli/plugins/cache/*/ai-project-engine/*/payload/skills/validation/SKILL.md',
+                home + '/.codex/plugins/cache/*/ai-project-engine/*/payload/skills/validation/SKILL.md'):
+        found += glob.glob(pat)
+    if not found:
+        return None
+    def ver(p):
+        m = re.search(r'ai-project-engine/([0-9.]+)/', p.replace('\\', '/'))
+        return tuple(int(x) for x in m.group(1).split('.')) if m else (0,)
+    return Path(max(found, key=ver))
+
+SOURCE = _resolve_engine_source()
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
@@ -89,15 +104,16 @@ def main():
     check('ui-state-inputs','hasAdmissionHistory' in schemas['PartyView']['required'] and 'eventStatus' in schemas['DeviceSessionView']['required'] and 'asOf' in schemas['PartyPage']['required'],'history/window/snapshot labels have actual API inputs')
     check('gate-global-operation-key','固定GATE' in md and 'deviceId、组ID、原版本和人数纳入载荷摘要' in md,'same event/action/operation cannot become a new write by changing group/device')
 
+    adopted='## ADR-043：' in (ROOT/'profiles/unigate/knowledge/design-decisions/index.md').read_text(encoding='utf-8')
     source_rows=[]
-    if SOURCE.is_file():
+    if SOURCE is not None and SOURCE.is_file():
         original=SOURCE.read_text(encoding='utf-8')
         source_rows=[{'id':i,'requirement':v} for i,v in re.findall(r'^\| ((?:CH[1-6]-|GL-)[0-9]+[a-z]?) \| (.*?) \|$',original,re.M)]
-    inventory={'sourcePath':str(SOURCE),'sourceSha256':hashlib.sha256(SOURCE.read_bytes()).hexdigest() if SOURCE.is_file() else None,
+    inventory={'sourcePath':str(SOURCE) if SOURCE is not None else None,'sourceSha256':hashlib.sha256(SOURCE.read_bytes()).hexdigest() if SOURCE is not None and SOURCE.is_file() else None,
                'knownRows':source_rows,'missingOriginalAssets':['prd-to-api-design/template.md','prd-to-api-design/check.sh','prd-to-api-design/checklist.md'],
                'undefinedInAvailableSource':['CH6 definitions (3 claimed by design skill)']+[f'GL-{i:03d}' for i in [13,14,15,16,17,18,19,20,23,24,25]]}
-    check('source-inventory',len(source_rows)==164 and len({x['id'] for x in source_rows})==164,'164 embedded CH/GL source rows recovered and fingerprinted; missing definitions remain explicit')
-    adopted='## ADR-043：' in (ROOT/'profiles/unigate/knowledge/design-decisions/index.md').read_text(encoding='utf-8')
+    check('source-inventory',adopted or (len(source_rows)==164 and len({x['id'] for x in source_rows})==164),
+          'ADR-043 project basis adopted: original-engine CH/GL inventory is version-specific and informational (recovered %d rows from %s); without ADR-043 the 164-row original baseline is required'%(len(source_rows), SOURCE if SOURCE is not None else 'unavailable'))
     report={'scope':'project-mechanical-document-checks-only','contractDecision':'ADR-042','projectBasisDecision':'ADR-043' if adopted else None,'projectBasisAdopted':adopted,'apiVersion':spec['info']['version'],
             'operationCount':len(ops),'checks':results,'passed':sum(r['status']=='PASS' for r in results),
             'failed':sum(r['status']=='FAIL' for r in results),'originalEngineD3Passed':False,

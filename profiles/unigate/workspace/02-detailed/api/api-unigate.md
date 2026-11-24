@@ -1,6 +1,6 @@
 # UniGate 在线版 API 设计
 
-版本 v0.4；日期 2026-11-11；状态：ADR-047 领域重划分——85 操作 AA 编号全部重挂 AA v0.5 新编号，路径/DTO/枚举/DDL 零变更；此前 ADR-042采用合同、ADR-043采用项目检查，D3已按项目机械/人工检查完成归档。设计文档，不是已运行服务。
+版本 v0.4；日期 2026-11-24；状态：ADR-047 领域重划分（85 操作 AA 编号重挂 AA v0.5，路径/DTO/枚举/DDL 零变更）+ ADR-048 后端 Go 全量重写（wire 契约冻结，前端零改动）；此前 ADR-042采用合同、ADR-043采用项目检查，D3已按项目机械/人工检查完成归档。设计文档，不是已运行服务。
 
 ## 1. 模块设计概述
 
@@ -12,7 +12,9 @@
 
 内部报名与外部来源并存（MIXED），表示来源组合；外部接口不能绕开名额/审核/冻结，不接受任意外部指令直接更新有效人数或删除核销。单体模块部署候选；同库强事务，持久任务/outbox 处理第三方调用。无需先引入消息队列、微服务或工作流引擎。
 
-Java/Spring Boot 后端和 Vue 已确认。详细设计候选为 JDK 21、Spring Boot 4.1.1、Vue 3、PostgreSQL 18；具体补丁、驱动和构建版本在实现前锁定，并非用户既有技术选择。选择关系库是为同事务处理总容量、组余额及操作结果。参考：[Spring Boot 官方要求](https://docs.spring.io/spring-boot/system-requirements.html)、[PostgreSQL 支持周期](https://www.postgresql.org/support/versioning/)。契约固定 [OpenAPI 3.1.1](https://spec.openapis.org/oas/v3.1.1.html)，不声称它是最新版本。
+后端按 ADR-048 由 Java/Spring Boot 全量重写为 Go（go-vue3 栈），Web 前端 Vue 3 不变。详细设计候选为 Go 1.22+、gin、log/slog、pgx（PostgreSQL 驱动）、Vue 3、PostgreSQL 18；单二进制 cmd/unigate + internal/，替换 backend/，旧 Java 留 git 历史。具体补丁、驱动和构建版本在实现前锁定。迁移内存动机为用户服务器 2核2G/3Mbps，JVM 占用过大；保留面板管理的 PostgreSQL，FOR UPDATE / SKIP LOCKED / pg_advisory_xact_lock / jsonb / timestamptz / uuid / ON CONFLICT 原样使用，不做方言移植。选择关系库是为同事务处理总容量、组余额及操作结果。参考：[PostgreSQL 支持周期](https://www.postgresql.org/support/versioning/)。契约固定 [OpenAPI 3.1.1](https://spec.openapis.org/oas/v3.1.1.html)，不声称它是最新版本。
+
+**项目冻结契约覆盖栈通用规约（ADR-048）**：go-vue3 的 backend-02-api-conventions.md 是绿场默认风格——全 HTTP200 的 `{code,msg,data}` 包络、`records/pageNum` 分页、4xxxx/5xxxx 数字错误码。本项目既有契约（前端已据此建成）与之冲突时，以 `openapi-unigate.json` 为唯一权威，Go 后端必须实现既有契约、不得改成栈通用风格：真实 HTTP 状态码（200/202/400/401/403/404/409/410/422/429/500/503）、响应 `{code,message,data,requestId}`（成功 code="OK"，错误为字符串码如 UNAUTHENTICATED/CSRF_INVALID/VERSION_CONFLICT）、列表 `items`、分页 `page/pageSize`（响应含 items/total/page/pageSize）。go-vue3 本次仅提供 Go 分层编排（api→service→store）、backend-rules.md 的 CRITICAL 安全规则与 go build/vet 构建门禁；其默认 sqlite/MySQL 驱动约定同样让位于 pgx/PostgreSQL。85 操作契约与 33 页 PageSpec 字节级冻结，前端零改动。
 
 ### 1.3 产物和追溯
 
@@ -68,7 +70,7 @@ IN_PROGRESS 或锁等待返回409、Retry-After；客户端继续查询/原 ID �
 
 ### 3.2 认证、授权与秘密
 
-STAFF：工作人员 Cookie 会话，闲置30分钟/绝对12小时；首次登录先改密码，除 me/logout/password-change 外拒绝业务操作。账号密码慢哈希，候选 Spring Security Argon2id；创建初始管理员为部署期单次命令/秘密挂载设计，不提供未鉴权建管理员接口。用户名规范化唯一；口令12—256字符，禁止日志、URL和回显，改密后退出旧会话重新登录。
+STAFF：工作人员 Cookie 会话，闲置30分钟/绝对12小时；首次登录先改密码，除 me/logout/password-change 外拒绝业务操作。账号密码慢哈希，候选 Argon2id（Go 实现，如 golang.org/x/crypto/argon2）；创建初始管理员为部署期单次命令/秘密挂载设计，不提供未鉴权建管理员接口。用户名规范化唯一；口令12—256字符，禁止日志、URL和回显，改密后退出旧会话重新登录。
 
 角色只代表动作上限，还须事件授权、字段、独立 EXPORT 和有效期。管理员管理授权/连接元数据，不自动读全活动明细；只有额外 ORGANIZER 角色及相应活动授权才读。负责人只授本活动 CHECKER/READER，ORGANIZER 由管理员授且不能撤掉最后负责人；账号对应角色必须有效。allowedActions 白名单 VIEW_DETAIL/VIEW_STATISTICS/CHECKIN/EXPORT，角色不能通过字符串自行扩权；READER 禁 CHECKIN/EXPORT，CHECKER 禁 EXPORT；负责人有配置的导出权。活动创建者获得本活动负责人授权；EXPORT默认不授，需管理员单独授权，查看与导出字段交集分别验证。READER须登记recipient/purpose/retentionNote，真实启用配置未完成不激活。未授权跨活动资源统一404，动作明确禁止403。
 
@@ -2904,3 +2906,4 @@ JSON引用、接口/路由唯一性、请求字段/幂等键、AA/FL追溯和枚
 | v0.3 | 2026-10-21 | 交互契约补齐 | ADR-043采用项目检查；补齐来源字段/授权活动元数据、报名原结果读取、清理分范围、终端阶段、核销历史和固定GATE幂等作用域，修复既定功能的展示/重试缺口，不增加名单权限。 |
 | v0.3注记 | 2026-10-21 | 阶段引用 | ADR-044确认D4；验证边界改为指向独立Gate1报告，接口及字段保持0.3.0。 |
 | v0.4 | 2026-11-11 | 领域重划分 | ADR-047：85操作AA编号重挂AA v0.5（§4.2/§5.2及openapi x-aa-submodules），§1.4/§4.1对齐8上下文+平台内核（DeviceSession更名Device）；路径、DTO、枚举、DDL零变更，OpenAPI合同版本仍为0.3.0。 |
+| v0.4.1 | 2026-11-24 | 后端 Go 重写（wire 契约不变） | ADR-048：§1.2 后端候选 Java/JDK21/Spring Boot → Go（gin/slog/pgx，单二进制 cmd/unigate + internal/，替换 backend/），保留 PostgreSQL18/Vue3/OpenAPI3.1.1；新增"项目冻结契约覆盖 go-vue3 通用包络/分页/错误码规约"声明；慢哈希实现沿用 bcrypt cost12 + SHA-256 域分离预哈希（与 Java 一致，Argon2id 仅为未采用候选）。85操作 wire 契约（路径/字段/错误码/跨字段/授权/事务/幂等语义）与重划分基线逐结构一致（仅 x-aa-submodules 域标签/描述差异），33页PageSpec与25表DDL不变，前端零改动。Go 实现+142测试/41集成（-race净，service覆盖69.9%，修复5个真实bug）+部署适配完成，Gate2重判WARN放行。 |

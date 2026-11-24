@@ -1,0 +1,32 @@
+# 技术栈 Profile：Go + Vue3 全栈（单二进制）
+# 契约：engine/02-profile-spec.md §2.3
+apiVersion: 1
+profile:
+  name: go-vue3
+  type: techstack
+  title: Go + Vue3 全栈（Go 1.22 / gin / log-slog / Vue 3.4 / TypeScript 5 / Vite 5 / Naive UI / Pinia）
+  depends: []
+
+stack:
+  layers: [backend, frontend]
+  requires_env: [BACKEND_ROOT, FRONTEND_ROOT]   # 激活时校验（缺失 → E-07 WARN）
+  build:
+    command: "go build ./... && go vet ./..."   # 后端编译 + 静态检查门禁（{module} 为 Go 包路径，单体全量构建）
+    module_pattern: "cmd/{service}"             # 单二进制：入口在 cmd/{service}/main.go，业务在 internal/
+  codegen:
+    orchestrator_agent: agents/backend-orchestrator.md        # 后端编排：D3 设计文档 → Go 代码
+    frontend_agent: agents/frontend-orchestrator.md           # 前端编排：PageSpec → Vue3/Naive UI 代码（DV-5）
+    specs: skills/stack-specs/SKILL.md                        # 后端 + 前端专题规约
+    api_spec: skills/stack-specs/backend-02-api-conventions.md  # design skill D3 引用 {stack.api_spec}
+  validation:
+    rules: [rules/backend-rules.md, rules/frontend-rules.md]  # Gate 2 等价规则集（CRITICAL/WARNING + grep 方法）
+
+assets:
+  agents:
+    - agents/backend-orchestrator.md
+    - agents/frontend-orchestrator.md
+  skills:
+    - skills/stack-specs
+  rules:
+    - rules/backend-rules.md
+    - rules/frontend-rules.md

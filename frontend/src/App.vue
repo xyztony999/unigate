@@ -25,7 +25,7 @@ watch(()=>identity.staff?.accountId,async(id)=>{if(id&&roles.value.some(r=>['ORG
     <div v-else-if="!page.roles.some((r:string)=>roles.includes(r))" class="center-card"><h1>此页面暂不可访问</h1><RouterLink to="/account/access">查看我的授权</RouterLink></div>
     <div v-else class="app-shell">
       <aside class="sidebar"><a class="brand" href="/">UniGate<span>活动服务</span></a><label v-if="events.length" class="event-choice">当前活动<select :value="eventId" @change="changeEvent(($event.target as HTMLSelectElement).value)"><option v-for="e in events" :key="e.eventId" :value="e.eventId">{{e.title}}</option></select></label><nav><RouterLink v-for="p in nav.filter(p=>!p.route.includes(':eventId')||eventId)" :key="p.id" :to="href(p)" :class="{active:p.id===page.id}">{{p.title}}</RouterLink></nav><button class="quiet" @click="logout">退出登录</button></aside>
-      <main class="workspace"><header class="workspace-header"><div><p class="eyebrow">UniGate</p><h1>{{page.title}}</h1></div><span>{{identity.staff.displayName}}</span></header><p v-if="error" role="alert" class="alert">{{error}}</p><RouterView :key="route.fullPath" /></main>
+      <main class="workspace"><header class="workspace-header"><h1>{{page.title}}</h1><span>{{identity.staff.displayName}}</span></header><p v-if="error" role="alert" class="alert">{{error}}</p><RouterView :key="route.fullPath" /></main>
     </div>
   </template>
 </template>

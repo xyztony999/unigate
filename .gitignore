@@ -2,8 +2,15 @@
 .env
 .env.*
 !.env.example
+# 本地工具审计/临时目录（Mimosa 安全扫描、scratch）
+.mimosa/
+.scratch/
+# Java 遗留构建产物（后端已 Go 重写，保留忽略以防回退）
 backend/target/
 backend/var/
+# Go 单二进制构建产物(backend/ 下 go build -o unigate ./cmd/unigate)
+backend/unigate
+backend/unigate.exe
 /var/
 frontend/node_modules/
 frontend/dist/
