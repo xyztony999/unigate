@@ -105,7 +105,7 @@ jobs:
           name: frontend-payload
           path: payload/
       - name: Assemble payload
-        run: cp deploy/deploy.sh deploy/docker-compose.yml deploy/unigate.service deploy/reset-admin.sh payload/
+        run: cp deploy/deploy.sh deploy/deploy-bt.sh deploy/docker-compose.yml deploy/unigate.service deploy/reset-admin.sh payload/
       - name: Configure SSH
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -131,6 +131,8 @@ jobs:
           WEB_ROOT: ${{ vars.WEB_ROOT || '/www/wwwroot/unigate' }}
           # 生产服务器 8080 已被占用, 默认 8090; 须与 unigate.env 的 PORT、nginx proxy_pass 一致
           APP_PORT: ${{ vars.APP_PORT || '8090' }}
+          # 部署模式: systemd(默认, 通用/斗拱面板/裸机) 或 bt(宝塔面板, Go项目管理进程)
+          DEPLOY_MODE: ${{ vars.DEPLOY_MODE || 'systemd' }}
           BASE_DIR: /opt/unigate
         run: |
           set -euo pipefail
@@ -140,4 +142,5 @@ jobs:
             mkdir -p '$BASE_DIR/releases/$RELEASE'; \
             tar -xzf /tmp/unigate-payload-$RELEASE.tgz -C '$BASE_DIR/releases/$RELEASE'; \
             rm -f /tmp/unigate-payload-$RELEASE.tgz; \
-            APP_PORT='$APP_PORT' bash '$BASE_DIR/releases/$RELEASE/deploy.sh' '$WEB_ROOT'"
+            SCRIPT=deploy.sh; if [ '$DEPLOY_MODE' = bt ]; then SCRIPT=deploy-bt.sh; fi; \
+            APP_PORT='$APP_PORT' bash '$BASE_DIR/releases/$RELEASE/'\$SCRIPT '$WEB_ROOT'"

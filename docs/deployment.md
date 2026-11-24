@@ -107,6 +107,11 @@ Settings → Secrets and variables → Actions:
 |---|---|---|
 | `WEB_ROOT` | `/www/wwwroot/unigate` | 宝塔站点根目录 |
 | `APP_PORT` | `8090` | 后端健康检查端口;本服务器 8080 被占故默认 8090,改动时同步 `unigate.env` 的 `PORT` 与 nginx `proxy_pass` |
+| `DEPLOY_MODE` | `systemd` | 部署脚本选路:`systemd`=通用 `deploy.sh`(裸机/斗拱面板等,systemd 管进程);`bt`=宝塔 `deploy-bt.sh`(宝塔「Go项目」管进程,面板可见可重启)。本服务器设 `bt` |
+
+**两种部署模式**:CI 把 `deploy.sh` 与 `deploy-bt.sh` 都上传,SSH 远端按 `DEPLOY_MODE` 选跑哪个,代码零改动即可切换面板/裸机。
+- `systemd`(默认):`deploy.sh` 装 systemd 单元 + `systemctl restart`,适合非宝塔环境。
+- `bt`(宝塔):`deploy-bt.sh` 经面板 Python API 幂等创建/重启「Go项目」(进程以 `unigate` 用户跑在 `APP_PORT`),不碰 systemd。配套一次性初始化:面板 PostgreSQL 建 `unigate` 库、宝塔「**HTML项目**」站点(纯静态前端 + `/api` 反代到 `APP_PORT`,自定义 nginx 放 `vhost/nginx/extension/<域名>/*.conf`,目录需 755)+ 证书。**`unigate.env` 首行须 `set -a`、末行 `set +a`**——宝塔启动脚本以 `source` 加载 env,不加 `set -a` 则变量不 export,Go 进程读不到 `UNIGATE_MASTER_KEY` 等会启动失败。
 
 部署密钥生成与安装:
 
