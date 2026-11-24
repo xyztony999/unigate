@@ -71,6 +71,8 @@ mkdir -p "$RELEASE_DIR/dist"
 tar -xzf "$RELEASE_DIR/frontend-dist.tar.gz" -C "$RELEASE_DIR/dist"
 rm -rf "$WEB_ROOT.new"
 cp -r "$RELEASE_DIR/dist" "$WEB_ROOT.new"
+# 宝塔可能给 .user.ini 加 immutable 属性, 先解锁再删, 否则 rm 失败
+run_root chattr -R -i "$WEB_ROOT.old" 2>/dev/null || true
 rm -rf "$WEB_ROOT.old"
 if [ -d "$WEB_ROOT" ]; then mv "$WEB_ROOT" "$WEB_ROOT.old"; fi
 mv "$WEB_ROOT.new" "$WEB_ROOT"
