@@ -7,6 +7,7 @@ import DynamicFields from '../components/DynamicFields.vue'
 import ResultDisplay from '../components/ResultDisplay.vue'
 import { contract,operations,schema,defaults,clean,label,display,enumCode,type Obj } from '../lib/contract'
 import { call,identity,newId,errorText,ApiError,getPending,savePending,clearPending } from '../lib/api'
+import { askConfirm } from '../lib/confirm'
 const route=useRoute(),router=useRouter(),page=computed(()=>route.meta.page as Obj)
 const results=ref<Record<string,any>>({}),selected=ref<Obj>({}),context=ref<Obj>({}),form=ref<Obj>({}),active=ref(''),busy=ref(false),error=ref(''),notice=ref(''),modal=ref(false),unknown=ref(!!getPending()),pairingQr=ref(''),pairingLink=ref(''),queryQr=ref(''),currentPage=ref(1),selectedRows=ref<string[]>([]),viewOp=ref(''),eventStatus=ref(''),policy=ref<Obj>(),grants=ref<Obj[]>([])
 const roles=computed(()=>identity.staff?.roles.map(enumCode)||[])
@@ -110,7 +111,7 @@ async function execute(op:string,payload:Obj){const recovering=unknown.value;bus
 async function navigateAfterSuccess(path:string){successNavigation.value=true;try{await router.push(path)}finally{successNavigation.value=false}}
 async function submit(){if(busy.value||unknown.value)return;const op=active.value;const spec=operations[op];const payload=clean(form.value)
  const invalid=validate(payload,defForDisplay());if(invalid.length){error.value=invalid.join('\n');return}
- if(spec.mutation){if(!confirm(confirmText(op)))return;savePending({operationId:payload.operationId,action:op,eventId:payload.eventId})}
+ if(spec.mutation){if(!(await askConfirm(confirmText(op),{title:operations[op].summary,confirmText:'确认提交'})))return;savePending({operationId:payload.operationId,action:op,eventId:payload.eventId})}
  await execute(op,payload)
 }
 function confirmText(op:string){const texts:Record<string,string>={EventTransition:form.value.action==='OPEN'?'开始检票后将冻结公众报名、普通审核和取消。确认开始？':form.value.action==='END'?'结束后不能自动重新开放检票。确认结束？':'确认更改活动状态？',BatchCommit:`确认整批提交选中的 ${selectedRows.value.length} 行？任一冲突将整批退回。`,PartyCancel:'确认取消本组报名并使入场码失效？',GateWalkIn:'确认分配现场报名名额？此操作不代表已入场。',GateIncrease:'确认增加本组名额？此操作不代表已入场。',GateCorrect:'确认更正原核销人数？将追加更正记录。',CredentialRevoke:'确认撤销入场码？此操作不释放名额。',CredentialReissue:'确认补发？旧入场码将失效。',ConnectionRevoke:'确认撤销平台连接？',GrantRevoke:'确认撤销此活动授权？'};return texts[op]||'确认提交本次操作？'}
@@ -125,7 +126,7 @@ function toggle(row:Obj,checked:boolean){if(!row.rowId)return;if(enumCode(row.st
 async function resolveUnknown(){const p=getPending();if(!p?.eventId)return;busy.value=true;try{const r=await call('OperationResult',{eventId:p.eventId,operationId:p.operationId,action:p.action});if(['SUCCEEDED','REJECTED'].includes(enumCode(r.status))){unknown.value=false;clearPending();modal.value=false;notice.value='已查到原操作结果，请刷新并核对记录。';await handleResult('OperationResult',r)}else notice.value='原操作仍在处理中，请稍后再查。'}catch(e){error.value=errorText(e)}finally{busy.value=false}}
 async function retryOriginal(){if(!unknown.value||!active.value||!form.value.operationId)return;await execute(active.value,form.value)}
 function paging(delta:number){currentPage.value=Math.max(1,currentPage.value+delta);void refresh()}
-function close(){if(unknown.value||busy.value)return;if(operations[active.value]?.mutation&&!confirm('放弃尚未提交的内容？'))return;form.value={};modal.value=false}
+async function close(){if(unknown.value||busy.value)return;if(operations[active.value]?.mutation&&!(await askConfirm('放弃尚未提交的内容？',{title:'放弃编辑',confirmText:'放弃',danger:true})))return;form.value={};modal.value=false}
 async function makeSignupQr(){signupQr.value=await QRCode.toDataURL(signupLink.value,{width:360,margin:3})}
 async function copyPairing(){try{await navigator.clipboard.writeText(pairingLink.value);notice.value='领取链接已复制。'}catch{error.value='暂时无法复制，请在目标终端扫描二维码。'}}
 onMounted(async()=>{let restoredBatch=false;busy.value=true;try{if(eventId.value&&roles.value.includes('ORGANIZER')){const detail=await call('EventDetail',{eventId:eventId.value});eventStatus.value=enumCode(detail.status);results.value.EventDetail=detail;context.value.eventId=eventId.value}
@@ -149,11 +150,11 @@ onBeforeUnmount(()=>{results.value={};selected.value={};form.value={};pairingQr.
   <p v-if="page.id==='C02'" class="notice">查找到报名信息后，请参与者出示原入场码。无法出示时，请由活动负责人核对并补发。</p>
   <div v-if="eventId&&roles.includes('ORGANIZER')&&eventStatus!=='DRAFT'" class="toolbar"><button class="secondary" @click="signupQr?signupQr='':makeSignupQr()">活动报名二维码</button></div>
   <section v-if="signupQr" class="card pairing-card"><h2>扫码报名</h2><img :src="signupQr" alt="活动报名二维码"><a class="button secondary" :href="signupQr" download="UniGate-活动报名码.png">保存报名码</a><p><a :href="signupLink" target="_blank" rel="noopener">打开活动报名页</a></p></section>
-  <div class="toolbar"><button class="secondary" :disabled="busy||unknown" @click="refresh">刷新</button><button v-for="op in actions.filter((name:string)=>!(page.id==='O07'&&!context.batchId&&name==='BatchUpload'))" :key="op" :disabled="!can(op)" @click="begin(op)">{{operations[op].summary}}</button><RouterLink v-if="page.id==='O08'" class="button" :to="'/manage/events/'+eventId+'/scan'">进入工作人员检票</RouterLink></div>
+  <div class="toolbar"><button v-if="dataOps.length>0||page.layout==='statistics'" class="secondary" :disabled="busy||unknown" @click="refresh">刷新</button><button v-for="op in actions.filter((name:string)=>!(page.id==='O07'&&!context.batchId&&name==='BatchUpload'))" :key="op" :disabled="!can(op)" @click="begin(op)">{{operations[op].summary}}</button><RouterLink v-if="page.id==='O08'" class="button" :to="'/manage/events/'+eventId+'/scan'">进入工作人员检票</RouterLink></div>
   <div v-if="importContinuation&&roles.includes('ORGANIZER')&&['O06','O15'].includes(page.id)" class="card"><h2>来源名单已准备好</h2><p>继续核对字段映射和记录，再提交入场资格。</p><RouterLink class="button" :to="importContinuation">继续名单导入</RouterLink></div>
   <div v-if="dataOps.length>1" class="tabs"><button v-for="op in dataOps" :key="op" class="tab" :class="{active:viewOp===op}" :disabled="busy||unknown||(page.id==='O07'&&!context.batchId)" @click="read(op)">{{operations[op].summary}}</button></div>
   <section v-if="page.id==='O07'&&!context.batchId" class="card"><h2>导入名单</h2><p>上传名单后，依次映射字段、核对行内容，再提交选中的有效记录。</p><p class="muted">支持 CSV 和 XLSX。飞书问卷和腾讯文档可在“平台来源与字段映射”中连接并拉取。</p><button :disabled="busy||unknown" @click="begin('BatchUpload')">上传名单</button><RouterLink class="button secondary" :to="'/manage/events/'+eventId+'/sources'">连接平台来源</RouterLink></section>
-  <section v-else class="card">
+  <section v-else-if="dataOps.length>0||page.layout==='statistics'" class="card">
    <div class="card-heading"><h2>{{operations[viewOp||primary]?.summary||page.title}}</h2><button v-if="!operations[viewOp||primary]?.mutation" class="quiet" :disabled="busy||unknown" @click="begin(viewOp||primary)">筛选与查询</button></div>
    <p v-if="busy" role="status" class="muted">正在读取…</p>
    <template v-if="page.layout==='statistics'&&current"><div class="metric-grid"><div v-for="key in ['applicationGroups','approvedGroups','allocatedPeople','netAdmissions','unusedPlaces','pendingGroups']" :key="key"><strong>{{current[key]??'—'}}</strong><span>{{({applicationGroups:'申请组数',approvedGroups:'批准组数',allocatedPeople:'有效名额',netAdmissions:'累计入场',unusedPlaces:'未用名额',pendingGroups:'待审核组数'} as Record<string,string>)[key]}}</span></div></div><p class="muted">数据截至 {{display(current.asOf)}}</p></template>

@@ -5,6 +5,7 @@ import { createMemoryHistory,createRouter } from 'vue-router'
 import ParticipantView from '../src/views/ParticipantView.vue'
 import { identity,getPending } from '../src/lib/api'
 import { operations } from '../src/lib/contract'
+vi.mock('../src/lib/confirm',()=>({askConfirm:vi.fn(async()=>true)}))
 const code=(value:string)=>({code:value,label:value})
 const access={queryToken:'private-query-token',changeToken:'private-change-token',expiresAt:'2026-12-01T00:00:00Z'}
 const baseParty={partyId:'party',partyReference:'U-123',eventId:'event',fields:{name:'测试家长',companionCount:2},status:code('PENDING'),approvedSize:0,pendingIncrease:0,netAdmitted:0,remainingCount:0,progress:code('NONE'),canChange:false,canCancel:false,version:1,expiresAt:'2026-12-01T00:00:00Z'}
@@ -14,7 +15,6 @@ const ok=(data:any,status=200)=>new Response(JSON.stringify({code:'OK',data,requ
 beforeEach(()=>{
  sessionStorage.clear();history.replaceState(null,'','/');requests=[];event=structuredClone(publicEvent);party=structuredClone(baseParty);submitUnknown=false
  Object.assign(identity,{staff:null,anonCsrf:'anon-csrf',staffCsrf:'',partyCsrf:'',deviceCsrf:'',clientContextId:'original-context'})
- vi.stubGlobal('confirm',vi.fn(()=>true))
  vi.stubGlobal('fetch',vi.fn(async(url:string,init:RequestInit)=>{
   const op=(Object.values(operations) as any[]).find(o=>url.split('?')[0]===o.path)?.name
   const body=init?.body?JSON.parse(String(init.body)):{};requests.push({op,body})

@@ -3,11 +3,24 @@ import { computed, onMounted, ref,watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { contract, enumCode, type Obj } from './lib/contract'
 import { identity, initStaff, call, newId, errorText, getPending, bootstrap } from './lib/api'
+import ThemeToggle from './components/ThemeToggle.vue'
+import ConfirmDialog from './components/ConfirmDialog.vue'
 const route=useRoute(),router=useRouter(),ready=ref(false),error=ref(''),events=ref<Obj[]>([])
 const page=computed(()=>route.meta.page as Obj)
 const publicPage=computed(()=>['P01','P02','P03','P04','S01','S04'].includes(page.value?.id))
 const roles=computed(()=>identity.staff?.roles.map(enumCode)||[])
-const nav=computed(()=>contract.pages.filter(p=>!['S01','S04','O04','O09','C02','C03'].includes(p.id)&&!p.id.startsWith('P')&&p.roles.some((r:string)=>roles.value.includes(r))))
+const NAV_ORDER:{label:string;ids:string[]}[]=[
+ {label:'个人',ids:['S02','S03']},
+ {label:'活动管理',ids:['O01','O02','O03','O05','O06','O07','O08','O10','O11','O12','O13','O14','O15','O16','O17']},
+ {label:'检票',ids:['C01']},
+ {label:'只读统计',ids:['R01','R02']},
+ {label:'平台管理',ids:['A01','A02','A03']},
+]
+const navGroups=computed(()=>{
+ const accessible=contract.pages.filter(p=>!['S01','S04','O04','O09','C02','C03'].includes(p.id)&&!p.id.startsWith('P')&&p.roles.some((r:string)=>roles.value.includes(r)))
+ const byId:Record<string,Obj>=Object.fromEntries(accessible.map(p=>[p.id,p]))
+ return NAV_ORDER.map(g=>({label:g.label,pages:g.ids.map(id=>byId[id]).filter(Boolean)})).filter(g=>g.pages.length)
+})
 const eventId=computed(()=>String(route.params.eventId||events.value[0]?.eventId||''))
 function href(p:Obj) { return p.route.replace(':eventId',eventId.value).replace(':partyId','') }
 async function load() { try { await router.isReady();if(route.name==='P04'){await bootstrap();return} await initStaff(); if(identity.staff&&!identity.staff.mustChangePassword&&roles.value.some(r=>['ORGANIZER','CHECKER','READER'].includes(r))) events.value=(await call('EventList',{page:1,pageSize:100})).items||[] } catch(e){error.value=errorText(e)} finally{ready.value=true} }
@@ -24,8 +37,9 @@ watch(()=>identity.staff?.accountId,async(id)=>{if(id&&roles.value.some(r=>['ORG
     <div v-else-if="identity.staff.mustChangePassword && page.id!=='S02'" class="center-card"><h1>请设置新密码</h1><p>首次登录后需要更新密码。</p><RouterLink class="button" to="/account/password">修改密码</RouterLink></div>
     <div v-else-if="!page.roles.some((r:string)=>roles.includes(r))" class="center-card"><h1>此页面暂不可访问</h1><RouterLink to="/account/access">查看我的授权</RouterLink></div>
     <div v-else class="app-shell">
-      <aside class="sidebar"><a class="brand" href="/">UniGate<span>活动服务</span></a><label v-if="events.length" class="event-choice">当前活动<select :value="eventId" @change="changeEvent(($event.target as HTMLSelectElement).value)"><option v-for="e in events" :key="e.eventId" :value="e.eventId">{{e.title}}</option></select></label><nav><RouterLink v-for="p in nav.filter(p=>!p.route.includes(':eventId')||eventId)" :key="p.id" :to="href(p)" :class="{active:p.id===page.id}">{{p.title}}</RouterLink></nav><button class="quiet" @click="logout">退出登录</button></aside>
+      <aside class="sidebar"><a class="brand" href="/">UniGate<span>活动服务</span></a><label v-if="events.length" class="event-choice">当前活动<select :value="eventId" @change="changeEvent(($event.target as HTMLSelectElement).value)"><option v-for="e in events" :key="e.eventId" :value="e.eventId">{{e.title}}</option></select></label><nav><template v-for="g in navGroups" :key="g.label"><p class="nav-group">{{g.label}}</p><RouterLink v-for="p in g.pages.filter(p=>!p.route.includes(':eventId')||eventId)" :key="p.id" :to="href(p)" :class="{active:p.id===page.id}">{{p.title}}</RouterLink></template></nav><div class="sidebar-foot"><ThemeToggle/><button class="quiet" @click="logout">退出登录</button></div></aside>
       <main class="workspace"><header class="workspace-header"><h1>{{page.title}}</h1><span>{{identity.staff.displayName}}</span></header><p v-if="error" role="alert" class="alert">{{error}}</p><RouterView :key="route.fullPath" /></main>
     </div>
+    <ConfirmDialog/>
   </template>
 </template>

@@ -5,12 +5,12 @@ import { createMemoryHistory,createRouter } from 'vue-router'
 import WorkspaceView from '../src/views/WorkspaceView.vue'
 import { contract,operations } from '../src/lib/contract'
 import { identity,getPending } from '../src/lib/api'
+vi.mock('../src/lib/confirm',()=>({askConfirm:vi.fn(async()=>true)}))
 let finish:(response:Response)=>void=()=>{}
 let mutationOp=''
 const ok=(data:any)=>new Response(JSON.stringify({code:'OK',data,requestId:'r'}),{status:200,headers:{'Content-Type':'application/json'}})
 beforeEach(()=>{
  sessionStorage.clear();identity.staff={accountId:'staff',username:'operator',displayName:'工作人员',roles:[{code:'ORGANIZER',label:'负责人'}],csrfToken:'csrf',expiresAt:'2026-12-01T00:00:00Z',mustChangePassword:false};identity.staffCsrf='csrf'
- vi.stubGlobal('confirm',vi.fn(()=>true))
  vi.stubGlobal('fetch',vi.fn(async(url:string)=>{
   if(url.startsWith(operations.EventDetail.path))return ok({eventId:'event',title:'家长见面会',status:{code:'READY',label:'已发布'},version:1})
   if(url.startsWith(operations.PolicyGet.path))return ok({fields:{name:{enabled:true,required:true}},approvalMode:{code:'REVIEW',label:'审核'},version:1,retentionDays:30})
